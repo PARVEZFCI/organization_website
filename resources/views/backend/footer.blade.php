@@ -49,5 +49,27 @@
 
        
      </script>
+
+    <!-- Hide CKEditor security notice (message: "This CKEditor ... Version Is Not Secure") -->
+    <style>
+      /* generic fallbacks */
+      .cke_security_notice, .cke_notification, .cke_alert, .cke_warning{ display: none !important; }
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        // delay to allow CKEditor to insert its notice
+        setTimeout(function(){
+          // search all elements and hide ones that contain the CKEditor warning text
+          document.querySelectorAll('div, span, p').forEach(function(el){
+            try{
+              if(el && el.textContent && el.textContent.trim().indexOf('This CKEditor') === 0){
+                el.style.display = 'none';
+                if(el.parentElement) el.parentElement.style.display = 'none';
+              }
+            }catch(e){}
+          });
+        }, 500);
+      });
+    </script>
 </body>
 </html>

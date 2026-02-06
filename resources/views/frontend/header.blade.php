@@ -8,24 +8,14 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
-
-        .navbar {
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="{{ asset('frontend/style.css') }}">
 </head>
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light navbar-white sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">Training Center</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -60,16 +50,18 @@
        @php
          $data = DB::table('settings')->orderBy('id','DESC')->first();
     @endphp
-    <div class="logo text-center my-4">
-        @if(isset($data))
-            <img src="{{url($data->logo)}}" alt="{{ $data->company_name ?? 'Logo' }}" style="max-width:200px;">
-        @else
-            <img src="/frontend/img/default-logo.png" alt="Default Logo" style="max-width:200px;">
-        @endif
+    <div class="logo-container text-center" style="background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%); padding: 1.25rem 0; border-bottom: 3px solid #3b82f6;">
+        <div class="container">
+            @if(isset($data))
+                <img src="{{url($data->logo)}}" alt="{{ $data->company_name ?? 'Logo' }}" style="max-width: 200px; height: auto;">
+            @else
+                <img src="/frontend/img/default-logo.png" alt="Default Logo" style="max-width: 200px; height: auto;">
+            @endif
+        </div>
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></link>
 </body>
 
 </html>

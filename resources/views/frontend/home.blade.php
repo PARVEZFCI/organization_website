@@ -1,29 +1,124 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Home - Training Center')
+@section('title', 'Home - BESWA')
 
 @section('content')
 @php
 $homeSettings = \App\Models\HomeSetting::first();
 @endphp
   <!-- Hero Section -->
-    <section id="home" class="hero-section" style="background: linear-gradient(rgb(178 153 49), rgba(4, 120, 87, 0.85)), url('{{ $homeSettings->banner_image }}') center/cover;">
+    <section id="home" class="hero-section" 
+    style="background: linear-gradient(#fff, rgba(130, 194, 255, 0.85)), url('{{ $homeSettings->banner_image }}') center/cover;"
+    >
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-md-10">
                     <div class="hero-content">
                         <h1>{{ $homeSettings->title }}</h1>
                         <p>{{ $homeSettings->details }}</p>
-                        <button class="btn btn-primary-custom">Join Us Today</button>
-                        <a href="{{ route('donation.page') }}" class="btn btn-outline-custom">Donate Now</a>
+                        <a href="{{ route('membership.form') }}" class="btn btn-primary-custom me-2">Become a Member</a>
+                        <a href="{{ route('donation.page') }}" class="btn btn-outline-custom">Payment Now</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+
+    <!-- Focus Areas -->
+    <section  id="services" class="container my-5">
+        <h2 class="section-title">What We Do</h2>
+        <p class="section-subtitle">Key areas where BESWA creates impact</p>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="service-card">
+                    <i class="fas fa-handshake-angle"></i>
+                    <h4>Unity & Cooperation</h4>
+                    <p>Strengthening bonds among alumni and fostering mutual support.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="service-card">
+                    <i class="fas fa-school"></i>
+                    <h4>Educational Assistance</h4>
+                    <p>Scholarships, mentoring, and academic guidance for students.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="service-card">
+                    <i class="fas fa-briefcase"></i>
+                    <h4>Employment Support</h4>
+                    <p>Job placement, career counseling, and industry networking.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="service-card">
+                    <i class="fas fa-screwdriver-wrench"></i>
+                    <h4>Skill Enhancement</h4>
+                    <p>Training programs and workshops for professional growth.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="service-card">
+                    <i class="fas fa-shield-heart"></i>
+                    <h4>Humanitarian Aid</h4>
+                    <p>Disaster response and social welfare initiatives.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="service-card">
+                    <i class="fas fa-building-columns"></i>
+                    <h4>Collaboration</h4>
+                    <p>Working with government and NGOs to scale impact.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Values -->
+    <section class="container my-5">
+        <h2 class="section-title">Our Values</h2>
+        <p class="section-subtitle">Principles that guide our work</p>
+        <div class="row g-3">
+            <div class="col-sm-6 col-lg-3">
+                <div class="p-3 bg-white rounded-3 shadow-sm text-center">
+                    <div class="fw-bold">Volunteerism</div>
+                    <small class="text-muted">Serving with dedication</small>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="p-3 bg-white rounded-3 shadow-sm text-center">
+                    <div class="fw-bold">Transparency</div>
+                    <small class="text-muted">Accountable and open</small>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="p-3 bg-white rounded-3 shadow-sm text-center">
+                    <div class="fw-bold">Responsibility</div>
+                    <small class="text-muted">Collective action</small>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="p-3 bg-white rounded-3 shadow-sm text-center">
+                    <div class="fw-bold">Pride</div>
+                    <small class="text-muted">We are Proud BIMTian</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="container my-5">
+        <div class="p-4 bg-white rounded-3 shadow-sm text-center">
+            <h3 class="mb-3">Get Involved</h3>
+            <p class="mb-4">Join our community, volunteer your time, or support our initiatives to make a lasting impact.</p>
+            <a href="{{ route('register') }}" class="btn btn-primary-custom me-2">Join BESWA</a>
+            <a href="{{ route('donation.page') }}" class="btn btn-outline-custom">Donate</a>
+        </div>
+    </section>
+
     <!-- Search Section -->
-   <div class="container">
+   {{-- <div class="container">
         <div class="search-section">
             <h3 class="search-title text-center mb-4">Make Your Donation</h3>
 
@@ -85,10 +180,10 @@ $homeSettings = \App\Models\HomeSetting::first();
                 <a href="#" style="color: #16a34a; text-decoration: none; font-weight: 600;">Click here to learn more</a>
             </p>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Services Section -->
-    <section id="services" class="container my-5">
+    {{-- <section id="services" class="container mb-5">
         <h2 class="section-title">Our Services</h2>
         <p class="section-subtitle">Comprehensive agricultural solutions for modern farming</p>
         <div class="row g-4">
@@ -107,7 +202,7 @@ $homeSettings = \App\Models\HomeSetting::first();
             </div>
             @endforelse
         </div>
-    </section>
+    </section> --}}
 
     <!-- Activities Section -->
     <section id="activities" class="container my-5">
@@ -139,7 +234,7 @@ $homeSettings = \App\Models\HomeSetting::first();
         </div>
         @if($ongoingActivities->count() > 0)
         <div class="text-center mt-5">
-            <button class="btn btn-primary-custom">View All Activities</button>
+            <a href="{{ route('activities') }}" class="btn btn-primary-custom">View All Activities</a>
         </div>
         @endif
     </section>
@@ -150,7 +245,7 @@ $homeSettings = \App\Models\HomeSetting::first();
             <h2 class="section-title text-white">Connect With Us Online</h2>
             <p class="text-center mb-5">Register now to access all services online easily and conveniently</p>
             <div class="row g-4">
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-3 col-md-4 col-sm-12">
                     <div class="office-card">
                         <i class="fas fa-user-plus office-icon"></i>
                         <h5>Registration</h5>
@@ -188,12 +283,23 @@ $homeSettings = \App\Models\HomeSetting::first();
         <p class="section-subtitle">Glimpses of our work and activities</p>
         <div class="row g-4">
             @forelse($photoGalleries as $photo)
-            <div class="col-lg-4 col-md-6">
-                @if($photo->image)
-                <img src="/{{ $photo->image }}" alt="Gallery" class="gallery-img">
-                @else
-                <img src="https://via.placeholder.com/400x300?text=No+Image" alt="No Image" class="gallery-img">
-                @endif
+            <div class="col-lg-3 col-md-6">
+                <div class="gallery-item">
+                    @if($photo->image)
+                        <img src="/{{ $photo->image }}" alt="Gallery" class="gallery-img">
+                    @else
+                        <img src="https://via.placeholder.com/400x300?text=No+Image" alt="No Image" class="gallery-img">
+                    @endif
+                    <div class="gallery-overlay">
+                        <div class="gallery-badge">
+                            <i class="fas fa-image"></i>
+                            <span>Gallery</span>
+                        </div>
+                        <div class="gallery-zoom" aria-hidden="true">
+                            <i class="fas fa-arrow-up-right-from-square"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
             @empty
             <div class="col-12">
@@ -203,7 +309,7 @@ $homeSettings = \App\Models\HomeSetting::first();
         </div>
         @if($photoGalleries->count() > 0)
         <div class="text-center mt-5">
-            <button class="btn btn-primary-custom">View More</button>
+            <a href="{{ route('gallery') }}" class="btn btn-primary-custom">View More</a>
         </div>
         @endif
     </section>
@@ -237,7 +343,7 @@ $homeSettings = \App\Models\HomeSetting::first();
         </div>
         @if($upcomingEvents->count() > 0)
         <div class="text-center mt-5">
-            <button class="btn btn-primary-custom">View All Events</button>
+            <a href="{{ route('events') }}" class="btn btn-primary-custom">View All Events</a>
         </div>
         @endif
     </section>

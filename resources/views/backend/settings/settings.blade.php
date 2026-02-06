@@ -104,19 +104,34 @@
                   <div class="col-md-6">
                       <div class="form-group">
                           <label for="name"> Company Logo </label>
-                          @if(isset($settings->logo))
                            <input  type="file" class="form-control"   name="logo" >
-                          @else
-                          <input  type="file" class="form-control"   name="logo" >
-                          @endif
                       </div>
                   </div>
 
-                  <div class="col-md-6"></div>
-                  @if(isset($settings))
                   <div class="col-md-6">
                       <div class="form-group">
+                          <label for="favicon"> Favicon </label>
+                          <input type="file" class="form-control" name="favicon">
+                          <small class="form-text text-muted">Recommended 32x32 or 64x64 png/ico</small>
+                      </div>
+                  </div>
+
+                  @if(isset($settings))
+                  <div class="col-md-3">
+                      <div class="form-group">
+                          <label>Current Logo</label><br>
                           <img style="height:100px" src="{{url($settings->logo)}}">
+                      </div>
+                  </div>
+
+                  <div class="col-md-3">
+                      <div class="form-group">
+                          <label>Current Favicon</label><br>
+                          @if(isset($settings->favicon))
+                            <img style="height:64px;width:64px" src="{{url($settings->favicon)}}">
+                          @else
+                            <p class="text-muted">No favicon uploaded</p>
+                          @endif
                       </div>
                   </div>
                   @endif

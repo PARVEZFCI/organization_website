@@ -22,8 +22,8 @@
 </head>
 
 <body>
-     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-white sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
                 @if(isset($settings) && $settings->logo)
@@ -37,14 +37,28 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('about') }}">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#activities">Activities</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#events">Events</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#gallery">Gallery</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('teams') }}">Teams</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/donation') }}">Donation</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ url('/') }}">Home</a></li>
+
+                    <!-- About Link -->
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">About</a></li>
+
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('news') ? 'active' : '' }}" href="{{ route('news') }}">News</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('events') ? 'active' : '' }}" href="{{ route('events') }}">Events</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('activities') ? 'active' : '' }}" href="{{ route('activities') }}">Our Activities</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('gallery') ? 'active' : '' }}" href="{{ route('gallery') }}">Gallery</a></li>
+
+                    <!-- Committee Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs('executive-committee') || request()->routeIs('advisory-council') ? 'active' : '' }}" href="#" id="committeeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Committee
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="committeeDropdown">
+                            <li><a class="dropdown-item {{ request()->routeIs('executive-committee') ? 'active' : '' }}" href="{{ route('executive-committee') }}">Executive Committee</a></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('advisory-council') ? 'active' : '' }}" href="{{ route('advisory-council') }}">Advisory Council</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('donation.page') ? 'active' : '' }}" href="{{ route('donation.page') }}">Donation</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                 </ul>
             </div>
@@ -102,7 +116,7 @@
                         <img src="img/DYC Circle Logo with Border.png" alt="">
                         @endif
                     </div>
-                    <p>{{ isset($settings) && $settings->company_name ? $settings->company_name . ' - is a voluntary organization in Matiranga dedicated to social welfare, skill development, and creating a drug-free, enlightened society.' : 'Dream Youth Club is a voluntary organization in Matiranga dedicated to social welfare, skill development, and creating a drug-free, enlightened society.' }}</p>
+                    <p>{{ isset($settings) && $settings->company_name ? $settings->company_name . ' - is a voluntary, non-profit alumni organization supporting BIMT students and graduates through welfare, education, professional growth, and social development initiatives.' : 'BESWA is a voluntary, non-profit alumni organization supporting BIMT students and graduates through welfare, education, professional growth, and social development initiatives.' }}</p>
                     <div class="social-icons mt-3">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -153,14 +167,14 @@
                 </div>
             </div>
             <div class="footer-bottom text-center">
-                <p>&copy; {{ date('Y') }} {{ isset($settings) && $settings->company_name ? $settings->company_name : 'Dream Youth Club' }}. All Rights Reserved.
-                    | Designed with <i class="fas fa-heart" style="color: #e74c3c;"></i> for Students
+                <p>&copy; {{ date('Y') }} {{ isset($settings) && $settings->company_name ? $settings->company_name : 'BESWA' }}. All Rights Reserved.
+                    | Designed with <i class="fas fa-heart" style="color: #e74c3c;"></i> for Volunteries
                 </p>
             </div>
         </div>
     </footer>
 
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
     @yield('scripts')
 </body>

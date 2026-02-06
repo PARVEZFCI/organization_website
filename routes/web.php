@@ -46,14 +46,31 @@ Route::get('/clear-cache', function() {
 });
 // Frontend homepage
 Route::get('/', [homeController::class, 'home'])->name('home');
-Route::get('/courses', [homeController::class, 'courses'])->name('courses');
-Route::get('/course/{slug}', [homeController::class, 'CourseDetail'])->name('course.details');
-Route::get('/procedure', [homeController::class, 'Procedure'])->name('procedure');
+
+// About Section Routes
 Route::get('/about', [homeController::class, 'about'])->name('about');
-Route::get('/blog', [homeController::class, 'blog'])->name('blog');
+Route::get('/mission-vision', [homeController::class, 'missionVision'])->name('mission.vision');
+Route::get('/aims-objectives', [homeController::class, 'aimsObjectives'])->name('aims.objectives');
+Route::get('/constitution', [homeController::class, 'constitution'])->name('constitution');
+Route::get('/message', [homeController::class, 'message'])->name('message');
+
+// Content Section Routes
+Route::get('/news', [homeController::class, 'news'])->name('news');
+Route::get('/events', [homeController::class, 'events'])->name('events');
+Route::get('/activities', [homeController::class, 'activities'])->name('activities');
+Route::get('/gallery', [homeController::class, 'gallery'])->name('gallery');
+
+// Committee Routes
+Route::get('/executive-committee', [homeController::class, 'executiveCommittee'])->name('executive-committee');
+Route::get('/advisory-council', [homeController::class, 'advisoryCouncil'])->name('advisory-council');
+
+// Other Routes
 Route::get('/contact', [homeController::class, 'contact'])->name('contact');
-Route::get('/teams', [homeController::class, 'teams'])->name('teams');
 Route::get('/donation', [homeController::class, 'donation'])->name('donation.page');
+
+// Membership form
+Route::get('/membership', [App\Http\Controllers\MembershipController::class, 'create'])->name('membership.form');
+Route::post('/membership', [App\Http\Controllers\MembershipController::class, 'store'])->name('membership.store');
 
 // Public Registration Routes
 Route::get('/register-account', [PublicRegistrationController::class, 'showRegistrationForm'])->name('public.registration.form');

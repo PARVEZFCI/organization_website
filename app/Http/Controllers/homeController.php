@@ -119,6 +119,7 @@ class homeController extends Controller
             'phone' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:255',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,ico|max:1024',
         ]);
 
         $setting = \App\Models\Setting::orderBy('id', 'DESC')->first();
@@ -126,9 +127,19 @@ class homeController extends Controller
 
         if ($request->hasFile('logo')) {
             $logo = $request->file('logo');
-            $logoName = time() . '.' . $logo->getClientOriginalExtension();
+            $logoName = 'logo_'.time() . '.' . $logo->getClientOriginalExtension();
             $logo->move(public_path('backend/img/logo'), $logoName);
             $data['logo'] = 'backend/img/logo/' . $logoName;
+        }
+
+        if ($request->hasFile('favicon')) {
+            $favicon = $request->file('favicon');
+            $faviconName = 'favicon_'.time() . '.' . $favicon->getClientOriginalExtension();
+            if (!file_exists(public_path('backend/img/favicon'))) {
+                mkdir(public_path('backend/img/favicon'), 0755, true);
+            }
+            $favicon->move(public_path('backend/img/favicon'), $faviconName);
+            $data['favicon'] = 'backend/img/favicon/' . $faviconName;
         }
 
         if ($setting) {
@@ -185,6 +196,63 @@ class homeController extends Controller
     public function donation()
     {
         return view('frontend.donation');
+    }
+
+    // About Section Methods
+    public function missionVision()
+    {
+        return view('frontend.mission-vision');
+    }
+
+    public function aimsObjectives()
+    {
+        return view('frontend.aims-objectives');
+    }
+
+    public function constitution()
+    {
+        return view('frontend.constitution');
+    }
+
+    public function message()
+    {
+        return view('frontend.message');
+    }
+
+    // Content Section Methods
+    public function news()
+    {
+        $news = []; // Add news model when ready
+        return view('frontend.news', compact('news'));
+    }
+
+    public function events()
+    {
+        $upcomingEvents = UpcomingEvent::orderBy('date', 'asc')->get();
+        return view('frontend.events', compact('upcomingEvents'));
+    }
+
+    public function activities()
+    {
+        $ongoingActivities = OngoingActivity::latest()->get();
+        return view('frontend.activities', compact('ongoingActivities'));
+    }
+
+    public function gallery()
+    {
+        $photoGalleries = PhotoGallery::latest()->get();
+        return view('frontend.gallery', compact('photoGalleries'));
+    }
+
+    // Committee Methods
+    public function executiveCommittee()
+    {
+        return view('frontend.executive-committee');
+    }
+
+    public function advisoryCouncil()
+    {
+        return view('frontend.advisory-council');
     }
 
 }

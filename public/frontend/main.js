@@ -44,71 +44,177 @@
             });
         });
 
-        / Activity Slider
+        // Activity Slider (guarded if elements exist)
         const slider = document.getElementById('activitySlider');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
-        
-        let scrollAmount = 0;
-        const slideDistance = 370; // card width + gap
-        
-        nextBtn.addEventListener('click', () => {
-            scrollAmount += slideDistance;
-            if (scrollAmount > slider.scrollWidth - slider.clientWidth) {
-                scrollAmount = 0; // Loop back to start
-            }
-            slider.scrollTo({
-                left: scrollAmount,
-                behavior: 'smooth'
+
+        if (slider && prevBtn && nextBtn) {
+            let scrollAmount = 0;
+            const slideDistance = 370; // card width + gap
+
+            nextBtn.addEventListener('click', () => {
+                scrollAmount += slideDistance;
+                if (scrollAmount > slider.scrollWidth - slider.clientWidth) {
+                    scrollAmount = 0; // Loop back to start
+                }
+                slider.scrollTo({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
             });
-        });
-        
-        prevBtn.addEventListener('click', () => {
-            scrollAmount -= slideDistance;
-            if (scrollAmount < 0) {
-                scrollAmount = slider.scrollWidth - slider.clientWidth; // Loop to end
-            }
-            slider.scrollTo({
-                left: scrollAmount,
-                behavior: 'smooth'
+
+            prevBtn.addEventListener('click', () => {
+                scrollAmount -= slideDistance;
+                if (scrollAmount < 0) {
+                    scrollAmount = slider.scrollWidth - slider.clientWidth; // Loop to end
+                }
+                slider.scrollTo({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
             });
-        });
-        
-        // Auto slide every 5 seconds
-        setInterval(() => {
-            nextBtn.click();
-        }, 5000);
-        
-        // Update scroll amount on manual scroll
-        slider.addEventListener('scroll', () => {
-            scrollAmount = slider.scrollLeft;
-        });
+
+            // Auto slide every 5 seconds
+            setInterval(() => {
+                nextBtn.click();
+            }, 5000);
+
+            // Update scroll amount on manual scroll
+            slider.addEventListener('scroll', () => {
+                scrollAmount = slider.scrollLeft;
+            });
+        }
         
 
-        // Gallery image interaction
-        const galleryImages = document.querySelectorAll('.gallery-img');
-        galleryImages.forEach(img => {
-            img.addEventListener('click', function() {
-                // Create modal effect
-                if (this.style.position === 'fixed') {
-                    this.style.position = 'relative';
-                    this.style.top = '';
-                    this.style.left = '';
-                    this.style.transform = '';
-                    this.style.zIndex = '';
-                    this.style.width = '';
-                    this.style.height = '';
-                    document.body.style.overflow = '';
-                } else {
-                    this.style.position = 'fixed';
-                    this.style.top = '50%';
-                    this.style.left = '50%';
-                    this.style.transform = 'translate(-50%, -50%) scale(1.5)';
-                    this.style.zIndex = '9999';
-                    this.style.width = 'auto';
-                    this.style.height = '80vh';
-                    document.body.style.overflow = 'hidden';
-                }
+        // Gallery image interaction: lightbox with immediate next/prev navigation
+        const galleryImages = Array.from(document.querySelectorAll('.gallery-img'));
+        let currentIndex = -1;
+        let lightbox = null;
+
+        function createLightbox() {
+            lightbox = document.createElement('div');
+            lightbox.className = 'lightbox-overlay';
+            lightbox.style.cssText = 'position:fixed;inset:0;z-index:99999;display:none;background:rgba(0,0,0,0.95);';
+            lightbox.innerHTML = `
+                <div class="lightbox-backdrop" style="position:absolute;inset:0;"></div>
+                <div class="lightbox-content" role="dialog" aria-modal="true" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                    <button class="lightbox-prev" aria-label="Previous" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.3);color:white;font-size:2.5rem;width:60px;height:60px;border-radius:50%;cursor:pointer;transition:all 0.3s ease;z-index:100002;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);">&#10094;</button>
+                    <img class="lightbox-img" src="" alt="Gallery image" style="max-width:95vw;max-height:95vh;object-fit:contain;display:block;transition:opacity 0.3s ease;">
+                    <button class="lightbox-next" aria-label="Next" style="position:absolute;right:20px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.3);color:white;font-size:2.5rem;width:60px;height:60px;border-radius:50%;cursor:pointer;transition:all 0.3s ease;z-index:100002;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);">&#10095;</button>
+                    <button class="lightbox-close" aria-label="Close" style="position:absolute;top:20px;right:30px;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.3);color:white;font-size:2.5rem;width:50px;height:50px;border-radius:50%;cursor:pointer;transition:all 0.3s ease;z-index:100002;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);">&times;</button>
+                    <div class="lightbox-counter" style="position:absolute;bottom:30px;left:50%;transform:translateX(-50%);color:white;font-size:1.1rem;background:rgba(0,0,0,0.5);padding:8px 20px;border-radius:20px;backdrop-filter:blur(10px);"></div>
+                </div>
+            `;
+
+            // inject minimal keyboard/interaction handlers
+            document.body.appendChild(lightbox);
+            
+            const prevBtn = lightbox.querySelector('.lightbox-prev');
+            const nextBtn = lightbox.querySelector('.lightbox-next');
+            const closeBtn = lightbox.querySelector('.lightbox-close');
+            
+            // Add hover effects
+            [prevBtn, nextBtn, closeBtn].forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.background = 'rgba(255,255,255,0.25)';
+                    this.style.borderColor = 'rgba(255,255,255,0.6)';
+                    this.style.transform = this === prevBtn || this === nextBtn ? 'translateY(-50%) scale(1.1)' : 'scale(1.1)';
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.style.background = 'rgba(255,255,255,0.1)';
+                    this.style.borderColor = 'rgba(255,255,255,0.3)';
+                    this.style.transform = this === prevBtn || this === nextBtn ? 'translateY(-50%) scale(1)' : 'scale(1)';
+                });
+            });
+            
+            lightbox.querySelector('.lightbox-backdrop').addEventListener('click', closeLightbox);
+            closeBtn.addEventListener('click', closeLightbox);
+            prevBtn.addEventListener('click', showPrev);
+            nextBtn.addEventListener('click', showNext);
+
+            // ensure keyboard navigation works
+            document.addEventListener('keydown', (e) => {
+                if (!lightbox || lightbox.style.display === 'none') return;
+                if (e.key === 'ArrowRight') showNext();
+                if (e.key === 'ArrowLeft') showPrev();
+                if (e.key === 'Escape') closeLightbox();
+            });
+        }
+
+        function openLightbox(index) {
+            if (!lightbox) createLightbox();
+            currentIndex = index;
+            const imgEl = lightbox.querySelector('.lightbox-img');
+            const counterEl = lightbox.querySelector('.lightbox-counter');
+            
+            // Fade out image before changing
+            imgEl.style.opacity = '0';
+            setTimeout(() => {
+                imgEl.src = galleryImages[currentIndex].src;
+                imgEl.style.opacity = '1';
+            }, 150);
+            
+            // Update counter
+            counterEl.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+            
+            lightbox.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            if (!lightbox) return;
+            lightbox.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        function showPrev() {
+            if (galleryImages.length === 0) return;
+            currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+            const imgEl = lightbox.querySelector('.lightbox-img');
+            const counterEl = lightbox.querySelector('.lightbox-counter');
+            
+            imgEl.style.opacity = '0';
+            setTimeout(() => {
+                imgEl.src = galleryImages[currentIndex].src;
+                imgEl.style.opacity = '1';
+                counterEl.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+            }, 150);
+        }
+
+        function showNext() {
+            if (galleryImages.length === 0) return;
+            currentIndex = (currentIndex + 1) % galleryImages.length;
+            const imgEl = lightbox.querySelector('.lightbox-img');
+            const counterEl = lightbox.querySelector('.lightbox-counter');
+            
+            imgEl.style.opacity = '0';
+            setTimeout(() => {
+                imgEl.src = galleryImages[currentIndex].src;
+                imgEl.style.opacity = '1';
+                counterEl.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+            }, 150);
+        }
+
+        galleryImages.forEach((img, idx) => {
+            img.style.cursor = 'zoom-in';
+            img.addEventListener('click', () => openLightbox(idx));
+        });
+
+        // Open lightbox when clicking the overlay zoom icon
+        const galleryZooms = Array.from(document.querySelectorAll('.gallery-zoom'));
+        galleryZooms.forEach(zoom => {
+            zoom.style.cursor = 'pointer';
+            zoom.addEventListener('click', (e) => {
+                e.preventDefault();
+                // find the related image inside the same gallery-item
+                const item = zoom.closest('.gallery-item');
+                if (!item) return;
+                const imgEl = item.querySelector('.gallery-img');
+                if (!imgEl) return;
+                const idx = galleryImages.indexOf(imgEl);
+                if (idx === -1) return;
+                openLightbox(idx);
             });
         });
 

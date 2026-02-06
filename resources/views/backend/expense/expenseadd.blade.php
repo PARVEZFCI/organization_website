@@ -30,7 +30,7 @@
 
         <div class="card bg-white">
 
-      		<div class="card-header border-0  text-white bg-warning" >
+      		<div class="card-header border-0  text-white bg-info" >
                 <i class="fa fa-user-circle"></i><span> Expense </span>
             </div>
 

@@ -24,7 +24,16 @@
        
     @endphp
   <!-- icon -->
-  <link rel="icon" href="{{url($data->logo)}}">
+  @if(isset($data) && $data->favicon)
+    <link rel="icon" href="{{ url($data->favicon) }}">
+    <link rel="shortcut icon" href="{{ url($data->favicon) }}">
+    <link rel="apple-touch-icon" href="{{ url($data->favicon) }}">
+  @elseif(isset($data) && $data->logo)
+    <link rel="icon" href="{{ url($data->logo) }}">
+    <link rel="shortcut icon" href="{{ url($data->logo) }}">
+  @else
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
+  @endif
   <!-- end linking -->
     <title>@yield('title')</title>
 </head>

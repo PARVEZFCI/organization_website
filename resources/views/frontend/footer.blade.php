@@ -18,7 +18,7 @@
                                 </div>
                                 <div class="footer-para">
                                     @if(isset($settings) && $settings->company_name)
-                                    <p>{{ $settings->company_name }} - Providing quality training and educational services to help you achieve your goals and build a successful career.</p>
+                                    <p>{{ $settings->company_name }} - is a voluntary, non-profit alumni organization supporting BIMT students and graduates through welfare, education, professional growth, and social development initiatives.</p>
                                     @else
                                     <p>Sorem ipsum dolor sit amet conse ctetur adipiscing elit, sed do eiusmod incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercition ullamco laboris nisi </p>
                                     @endif
