@@ -1,4 +1,4 @@
-@extends('backend.admin-layout')
+﻿@extends('backend.admin-layout')
 @section('title', 'Dashboard - ')
 @section('content')
     <div class="content-wrapper">
@@ -51,8 +51,20 @@
                                 @forelse($photos as $photo)
                                     <div class="col-md-3 col-sm-4 col-6 mb-4">
                                         <div class="card">
+                                            @if($photo->is_pinned)
+                                                <div class="badge badge-success" style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+                                                    <i class="fa fa-thumbtack"></i> Pinned
+                                                </div>
+                                            @endif
                                             <img src="/{{ $photo->image }}" class="card-img-top" alt="Gallery Photo" style="height: 200px; object-fit: cover;">
                                             <div class="card-body text-center p-2">
+                                                <form action="{{ route('Admin.photo_gallery.toggle_pin', $photo->id) }}"
+                                                    method="POST" style="display:inline-block; margin-right: 5px;">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm {{ $photo->is_pinned ? 'btn-warning' : 'btn-info' }} btn-block mb-1">
+                                                        <i class="fa fa-thumbtack"></i> {{ $photo->is_pinned ? 'Unpin' : 'Pin' }}
+                                                    </button>
+                                                </form>
                                                 <form action="{{ route('Admin.photo_gallery.destroy', $photo->id) }}"
                                                     method="POST" style="display:inline-block;">
                                                     @csrf

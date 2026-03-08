@@ -87,4 +87,17 @@ class PhotoGalleryController extends Controller
 
         return redirect()->route('Admin.photo_gallery.index')->with('success', 'Photo deleted successfully!');
     }
+
+    /**
+     * Toggle pin status of a photo.
+     */
+    public function togglePin(string $id)
+    {
+        $photo = PhotoGallery::findOrFail($id);
+        $photo->is_pinned = !$photo->is_pinned;
+        $photo->save();
+
+        $message = $photo->is_pinned ? 'Photo pinned successfully!' : 'Photo unpinned successfully!';
+        return redirect()->route('Admin.photo_gallery.index')->with('success', $message);
+    }
 }

@@ -38,9 +38,11 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Full Name</th>
+                                            <th>NID/Passport</th>
                                             <th>Email</th>
                                             <th>Mobile</th>
                                             <th>Membership Type</th>
+                                            <th>Status</th>
                                             <th>Amount</th>
                                             <th>Payment Method</th>
                                             <th>Date</th>
@@ -52,10 +54,18 @@
                                             <tr>
                                                 <td>{{ $membership->id }}</td>
                                                 <td>{{ $membership->full_name }}</td>
+                                                <td>{{ $membership->nid_passport_no ?? 'N/A' }}</td>
                                                 <td>{{ $membership->email ?? 'N/A' }}</td>
                                                 <td>{{ $membership->mobile }}</td>
                                                 <td>
                                                     <span class="badge badge-primary">{{ $membership->membership_type }}</span>
+                                                </td>
+                                                <td>
+                                                    @if($membership->status == 'active')
+                                                        <span class="badge badge-success">Active</span>
+                                                    @else
+                                                        <span class="badge badge-secondary">Inactive</span>
+                                                    @endif
                                                 </td>
                                                 <td>{{ $membership->amount ?? 'N/A' }}</td>
                                                 <td>{{ $membership->payment_method ?? 'N/A' }}</td>
@@ -75,7 +85,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="9" class="text-center text-muted">No members found</td>
+                                                <td colspan="11" class="text-center text-muted">No members found</td>
                                             </tr>
                                         @endforelse
                                     </tbody>

@@ -49,6 +49,9 @@
                         </div>
 
                         <div class="details-section" style="text-align: left; margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb;">
+                            {{-- @if($member->nid_passport_no)
+                                <p class="small mb-2"><i class="fas fa-id-card text-primary"></i> <strong>{{ $member->nid_passport_no }}</strong></p>
+                            @endif --}}
                             @if($member->organization)
                                 <p class="small mb-2"><i class="fas fa-building text-primary"></i> <strong>{{ $member->organization }}</strong></p>
                             @endif

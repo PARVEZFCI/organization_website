@@ -232,6 +232,10 @@
 }
 </style>
 
+@php
+    $fees = isset($fees) ? $fees : collect(['General'=>0,'Life'=>0,'Associate'=>0]);
+@endphp
+
 <div class="membership-wrapper">
     <div class="membership-form-container">
         <div class="membership-header">
@@ -262,6 +266,11 @@
                         <label class="form-label"><i class="fas fa-user input-icon"></i>Full Name <sup class="text-danger">*</sup></label>
                         <input type="text" name="full_name" value="{{ old('full_name') }}" class="form-control" placeholder="Enter your full name" required>
                         @error('full_name')<small class="text-danger d-block mt-1">{{ $message }}</small>@enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label"><i class="fas fa-id-card input-icon"></i>NID/Passport No</label>
+                        <input type="text" name="nid_passport_no" value="{{ old('nid_passport_no') }}" class="form-control" placeholder="Enter NID or Passport number">
+                        @error('nid_passport_no')<small class="text-danger d-block mt-1">{{ $message }}</small>@enderror
                     </div>
                     <div class="col-md-3">
                         <label class="form-label"><i class="fas fa-calendar input-icon"></i>Date of Birth</label>
@@ -393,31 +402,34 @@
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label class="membership-card">
-                                    <input type="radio" name="membership_type" value="General" data-fee="500" {{ old('membership_type')=='General' ? 'checked' : '' }} required>
+                                    <input type="radio" name="membership_type" value="General" data-fee="{{ $fees['General'] ?? 0 }}" {{ old('membership_type')=='General' ? 'checked' : '' }} required>
                                     <div class="card-content">
                                         <i class="fas fa-user-friends" style="font-size: 32px; color: #667eea; margin-bottom: 10px;"></i>
                                         <h5 style="margin: 10px 0 5px; font-size: 18px;">General Member</h5>
-                                        <p style="font-size: 13px; color: #718096; margin: 0;">Membership Fee: ৳500</p>
+                                        <p style="font-size: 13px; color: #718096; margin: 0;">Membership Fee: ৳{{ number_format($fees['General'] ?? 0) }}</p>
+                                        <p style="font-size: 13px; color: #718096; margin: 0;">Monthly Fee: ৳100</p>
                                     </div>
                                 </label>
                             </div>
                             <div class="col-md-4">
                                 <label class="membership-card">
-                                    <input type="radio" name="membership_type" value="Life" data-fee="10000" {{ old('membership_type')=='Life' ? 'checked' : '' }} required>
+                                    <input type="radio" name="membership_type" value="Life" data-fee="{{ $fees['Life'] ?? 0 }}" {{ old('membership_type')=='Life' ? 'checked' : '' }} required>
                                     <div class="card-content">
                                         <i class="fas fa-crown" style="font-size: 32px; color: #f59e0b; margin-bottom: 10px;"></i>
                                         <h5 style="margin: 10px 0 5px; font-size: 18px;">Life Time Member</h5>
-                                        <p style="font-size: 13px; color: #718096; margin: 0;">Membership Fee: ৳10,000</p>
+                                        <p style="font-size: 13px; color: #718096; margin: 0;">Membership Fee: ৳{{ number_format($fees['Life'] ?? 0) }}</p>
+                                        <p style="font-size: 13px; color: #718096; margin: 0;">Monthly Fee: N/A</p>
                                     </div>
                                 </label>
                             </div>
                             <div class="col-md-4">
                                 <label class="membership-card">
-                                    <input type="radio" name="membership_type" value="Associate" data-fee="1000" {{ old('membership_type')=='Associate' ? 'checked' : '' }} required>
+                                    <input type="radio" name="membership_type" value="Associate" data-fee="{{ $fees['Associate'] ?? 0 }}" {{ old('membership_type')=='Associate' ? 'checked' : '' }} required>
                                     <div class="card-content">
                                         <i class="fas fa-handshake" style="font-size: 32px; color: #10b981; margin-bottom: 10px;"></i>
                                         <h5 style="margin: 10px 0 5px; font-size: 18px;">Associate Member</h5>
-                                        <p style="font-size: 13px; color: #718096; margin: 0;">Membership Fee: ৳1,000</p>
+                                        <p style="font-size: 13px; color: #718096; margin: 0;">Membership Fee: ৳{{ number_format($fees['Associate'] ?? 0) }}</p>
+                                        <p style="font-size: 13px; color: #718096; margin: 0;">Monthly Fee: N/A</p>
                                     </div>
                                 </label>
                             </div>
@@ -429,7 +441,7 @@
                         <label class="form-label"><i class="fas fa-money-bill-wave input-icon"></i>Payment Type <sup class="text-danger">*</sup></label>
                         <div class="payment-options">
                             <label class="payment-option-card">
-                                <input type="radio" name="payment_type" value="membership_fee" data-amount="500" {{ old('payment_type')=='membership_fee' ? 'checked' : '' }} required>
+                                <input type="radio" name="payment_type" value="membership_fee" data-amount="{{ $fees[old('membership_type', 'General')] ?? 0 }}" {{ old('payment_type')=='membership_fee' ? 'checked' : '' }} required>
                                 <div class="payment-info">
                                     <i class="fas fa-id-card payment-icon"></i>
                                     <div class="payment-details">
@@ -437,7 +449,7 @@
                                         <p>One-time registration fee</p>
                                     </div>
                                 </div>
-                                <div class="payment-amount" id="membershipFeeAmount">৳500</div>
+                                <div class="payment-amount" id="membershipFeeAmount">৳{{ number_format($fees[old('membership_type','General')] ?? 0) }}</div>
                             </label>
 
                             {{-- <label class="payment-option-card">
@@ -584,6 +596,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // initialize display based on preselected membership type
+    if (membershipTypeInputs.length && membershipFeeAmountSpan) {
+        const checkedType = document.querySelector('input[name="membership_type"]:checked');
+        if (checkedType) {
+            const fee = parseInt(checkedType.dataset.fee);
+            membershipFeeAmountSpan.textContent = '৳' + fee.toLocaleString();
+            if (membershipFeeInput) {
+                membershipFeeInput.dataset.amount = fee;
+                if (membershipFeeInput.checked && totalAmountSpan) {
+                    totalAmountSpan.textContent = fee.toLocaleString();
+                    totalAmountBox.style.display = 'block';
+                }
+            }
+        }
+    }
+
     // Handle payment type selection
     paymentTypeInputs.forEach(input => {
         input.addEventListener('change', function() {

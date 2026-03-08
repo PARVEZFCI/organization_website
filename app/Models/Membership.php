@@ -10,9 +10,9 @@ class Membership extends Model
     use HasFactory;
 
     protected $fillable = [
-        'full_name', 'dob', 'gender', 'blood_group', 'present_address', 'permanent_address', 'profile_picture',
+        'full_name', 'nid_passport_no', 'dob', 'gender', 'blood_group', 'present_address', 'permanent_address', 'profile_picture',
         'course_name', 'intake_no', 'passing_year',
         'mobile', 'email', 'occupation', 'organization', 'office_address',
-        'membership_type', 'payment_type', 'amount', 'payment_method'
+        'membership_type', 'payment_type', 'amount', 'payment_method', 'status'
     ];
 }

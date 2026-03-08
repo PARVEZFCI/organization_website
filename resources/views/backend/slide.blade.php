@@ -90,6 +90,9 @@
             <a href="{{ route('Admin.membership.index') }}" class="nav-link {{ request()->routeIs('Admin.membership.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
                 <i class="fa fa-user-check"></i> Memberships
             </a>
+            <a href="{{ route('Admin.membership_fees.index') }}" class="nav-link {{ request()->routeIs('Admin.membership_fees.*') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
+                <i class="fa fa-money"></i> Fee Management
+            </a>
         </li>
 
 

@@ -5,12 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PhotoGallery extends Model
+class MembershipFeeSetting extends Model
 {
     use HasFactory;
 
+    protected $table = 'membership_fee_settings';
+
     protected $fillable = [
-        'image',
-        'is_pinned',
+        'name',
+        'fee',
     ];
+
+    public $timestamps = true;
 }

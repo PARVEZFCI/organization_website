@@ -17,6 +17,7 @@ use App\Models\PhotoGallery;
 use App\Models\UpcomingEvent;
 use App\Models\Membership;
 use App\Models\Committee;
+use App\Models\Blog;
 use DB;
 use Illuminate\Support\Str;
 
@@ -60,9 +61,14 @@ class homeController extends Controller
         $studentReviews = StudentReview::orderBy('created_at', 'desc')->limit(6)->get();
         $ourServices = OurService::latest()->get();
         $ongoingActivities = OngoingActivity::latest()->limit(6)->get();
-        $photoGalleries = PhotoGallery::latest()->limit(6)->get();
+        $photoGalleries = PhotoGallery::latest()->limit(8)->get();
+        $pinnedPhotos = PhotoGallery::where('is_pinned', true)->latest()->get();
         $upcomingEvents = UpcomingEvent::orderBy('date', 'asc')->limit(6)->get();
-        return view('frontend.home', compact('homeSetting', 'aboutSetting', 'countries', 'whyChooses', 'courses','studentReviews','studentVisas', 'ourServices', 'ongoingActivities', 'photoGalleries', 'upcomingEvents'));
+        $latestBlogs = Blog::where('status', 'published')->latest()->limit(3)->get();
+        $president = Committee::whereRaw('LOWER(position) LIKE ?', ['%president%'])->first();
+        $generalSecretary = Committee::whereRaw('LOWER(position) LIKE ?', ['%general secretary%'])->orWhereRaw('LOWER(position) LIKE ?', ['%gs%'])->first();
+        $chiefAdvisor = Committee::whereRaw('LOWER(position) LIKE ?', ['%chief advisor%'])->orWhereRaw('LOWER(position) LIKE ?', ['%advisor%'])->first();
+        return view('frontend.home', compact('homeSetting', 'aboutSetting', 'countries', 'whyChooses', 'courses','studentReviews','studentVisas', 'ourServices', 'ongoingActivities', 'photoGalleries', 'pinnedPhotos', 'upcomingEvents', 'latestBlogs', 'president', 'generalSecretary', 'chiefAdvisor'));
     }
 
     public function Procedure()

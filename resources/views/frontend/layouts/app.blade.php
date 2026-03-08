@@ -16,6 +16,7 @@
     @else
     <link rel="icon" href="{{ url('Fav Icon.png') }}">
     @endif
+    @stack('styles')
     <script src="{{ asset('frontend/main.js') }}" defer></script>
     @yield('styles')
 
@@ -178,6 +179,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
     @yield('scripts')
+    @stack('scripts')
 </body>
 
 

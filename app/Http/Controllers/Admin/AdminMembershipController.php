@@ -35,6 +35,7 @@ class AdminMembershipController extends Controller
 
         $data = $request->validate([
             'full_name' => 'required|string|max:255',
+            'nid_passport_no' => 'nullable|string|max:50',
             'dob' => 'nullable|date',
             'gender' => 'nullable|string|max:50',
             'blood_group' => 'nullable|string|max:10',
@@ -56,6 +57,7 @@ class AdminMembershipController extends Controller
             'payment_type' => 'required|string|in:membership_fee,monthly_gm,monthly_ec,lifetime,event_fee,donation',
             'amount' => 'required|integer|min:1',
             'payment_method' => 'required|string',
+            'status' => 'required|string|in:active,inactive',
         ]);
 
         if ($request->hasFile('profile_picture')) {

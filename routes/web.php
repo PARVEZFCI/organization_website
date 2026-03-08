@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\PhotoGalleryController;
 use App\Http\Controllers\Admin\UpcomingEventController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\CommitteeController;
+use App\Http\Controllers\Admin\AdminMembershipFeeController;
 use App\Http\Controllers\Admin\AdminMembershipController;
 use App\Http\Controllers\PublicRegistrationController;
 use App\Http\Controllers\SubscriberController;
@@ -219,9 +220,11 @@ Route::group(['middleware' => 'admin_auth', 'as' => 'Admin.', 'prefix' => 'admin
     Route::resource('our_services', OurServiceController::class);
     Route::resource('ongoing_activities', OngoingActivityController::class);
     Route::resource('photo_gallery', PhotoGalleryController::class);
+    Route::post('photo_gallery/{id}/toggle-pin', [PhotoGalleryController::class, 'togglePin'])->name('photo_gallery.toggle_pin');
     Route::resource('upcoming_events', UpcomingEventController::class);
     Route::resource('teams', TeamController::class);
     Route::resource('committee', CommitteeController::class);
+    Route::resource('membership_fees', AdminMembershipFeeController::class);
     Route::resource('membership', AdminMembershipController::class);
 });
 

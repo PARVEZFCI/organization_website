@@ -59,6 +59,16 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
+                                        <label for="nid_passport_no" class="form-label">NID/Passport No</label>
+                                        <input type="text" class="form-control @error('nid_passport_no') is-invalid @enderror" id="nid_passport_no" name="nid_passport_no" value="{{ $membership->nid_passport_no }}">
+                                        @error('nid_passport_no')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
                                         <label for="dob" class="form-label">Date of Birth</label>
                                         <input type="date" class="form-control @error('dob') is-invalid @enderror" id="dob" name="dob" value="{{ $membership->dob }}">
                                         @error('dob')
@@ -220,6 +230,19 @@
                                         <label for="payment_method" class="form-label">Payment Method <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control @error('payment_method') is-invalid @enderror" id="payment_method" name="payment_method" value="{{ $membership->payment_method }}" required>
                                         @error('payment_method')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                                        <select class="form-control @error('status') is-invalid @enderror" id="status" name="status" required>
+                                            <option value="active" {{ $membership->status == 'active' ? 'selected' : '' }}>Active</option>
+                                            <option value="inactive" {{ $membership->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                        </select>
+                                        @error('status')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
