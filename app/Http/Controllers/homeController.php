@@ -15,6 +15,8 @@ use App\Models\OurService;
 use App\Models\OngoingActivity;
 use App\Models\PhotoGallery;
 use App\Models\UpcomingEvent;
+use App\Models\Membership;
+use App\Models\Committee;
 use DB;
 use Illuminate\Support\Str;
 
@@ -98,7 +100,8 @@ class homeController extends Controller
 
     public function deshboard()
     {
-        return view('backend.deshboard');
+        $memberships = Membership::latest()->get();
+        return view('backend.deshboard', compact('memberships'));
     }
     public function adminlogout()
     {
@@ -247,7 +250,8 @@ class homeController extends Controller
     // Committee Methods
     public function executiveCommittee()
     {
-        return view('frontend.executive-committee');
+        $committees = Committee::orderBy('position_order')->get();
+        return view('frontend.executive-committee', compact('committees'));
     }
 
     public function advisoryCouncil()

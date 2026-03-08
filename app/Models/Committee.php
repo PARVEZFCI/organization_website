@@ -5,13 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Earning extends Model
+class Committee extends Model
 {
     use HasFactory;
-    // protected $table = "earnings";
 
     protected $fillable = [
-        'earning_name_id','amount','remarks','date','student_id','course_id'
-       
+        'position_order',
+        'name',
+        'position',
+        'image',
+        'description',
+        'email',
+        'phone'
     ];
 }

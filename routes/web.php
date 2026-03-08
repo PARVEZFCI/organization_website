@@ -32,6 +32,8 @@ use App\Http\Controllers\Admin\OngoingActivityController;
 use App\Http\Controllers\Admin\PhotoGalleryController;
 use App\Http\Controllers\Admin\UpcomingEventController;
 use App\Http\Controllers\Admin\TeamController;
+use App\Http\Controllers\Admin\CommitteeController;
+use App\Http\Controllers\Admin\AdminMembershipController;
 use App\Http\Controllers\PublicRegistrationController;
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\BkashPaymentController;
@@ -71,6 +73,7 @@ Route::get('/donation', [homeController::class, 'donation'])->name('donation.pag
 // Membership form
 Route::get('/membership', [App\Http\Controllers\MembershipController::class, 'create'])->name('membership.form');
 Route::post('/membership', [App\Http\Controllers\MembershipController::class, 'store'])->name('membership.store');
+Route::get('/memberships', [App\Http\Controllers\MembershipController::class, 'index'])->name('memberships.list');
 
 // Public Registration Routes
 Route::get('/register-account', [PublicRegistrationController::class, 'showRegistrationForm'])->name('public.registration.form');
@@ -218,6 +221,8 @@ Route::group(['middleware' => 'admin_auth', 'as' => 'Admin.', 'prefix' => 'admin
     Route::resource('photo_gallery', PhotoGalleryController::class);
     Route::resource('upcoming_events', UpcomingEventController::class);
     Route::resource('teams', TeamController::class);
+    Route::resource('committee', CommitteeController::class);
+    Route::resource('membership', AdminMembershipController::class);
 });
 
 Route::get('loginuser', [UserController::class, 'loginuser'])->name('loginuser');

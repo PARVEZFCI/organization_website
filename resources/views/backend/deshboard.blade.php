@@ -105,6 +105,51 @@ $student = DB::table('students')->where('date',$date)->count();
           </div>
         </div>
         <!-- end analytics -->
+        <!-- start member list -->
+        <div class="col-lg-12 mt-4">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">Member List</h5>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                  <thead class="table-light">
+                    <tr>
+                      <th>ID</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Mobile</th>
+                      <th>Course</th>
+                      <th>Membership Type</th>
+                      <th>Amount</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @forelse($memberships as $member)
+                      <tr>
+                        <td>{{ $member->id }}</td>
+                        <td>{{ $member->full_name }}</td>
+                        <td>{{ $member->email ?? 'N/A' }}</td>
+                        <td>{{ $member->mobile ?? 'N/A' }}</td>
+                        <td>{{ $member->course_name ?? 'N/A' }}</td>
+                        <td><span class="badge bg-info">{{ $member->membership_type ?? 'N/A' }}</span></td>
+                        <td>{{ $member->amount ?? 'N/A' }}</td>
+                        <td>{{ $member->created_at->format('Y-m-d') }}</td>
+                      </tr>
+                    @empty
+                      <tr>
+                        <td colspan="8" class="text-center text-muted">No members found</td>
+                      </tr>
+                    @endforelse
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end member list -->
         <!-- start user -->
 
 

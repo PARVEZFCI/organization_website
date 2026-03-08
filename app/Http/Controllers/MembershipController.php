@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\Storage;
 
 class MembershipController extends Controller
 {
+    public function index()
+    {
+        $memberships = Membership::latest()->paginate(12);
+        return view('frontend.memberships-list', compact('memberships'));
+    }
+
     public function create()
     {
         return view('frontend.membership');
@@ -41,8 +47,10 @@ class MembershipController extends Controller
         ]);
 
         if ($request->hasFile('profile_picture')) {
-            $path = $request->file('profile_picture')->store('members', 'public');
-            $data['profile_picture'] = $path;
+            $file = $request->file('profile_picture');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('members'), $filename);
+            $data['profile_picture'] = 'members/' . $filename;
         }
 
         // Calculate amount based on payment type

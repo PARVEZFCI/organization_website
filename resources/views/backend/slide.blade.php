@@ -53,7 +53,7 @@
         <li class="nav-item"><a href="{{route('Admin.settings')}}" class="nav-link {{ request()->routeIs('Admin.settings') ? 'active' : '' }}"><i class="fa fa-cog"></i>Settings</a></li>
         {{-- <li class="nav-item"><a href="{{route('Admin.branch')}}" class="nav-link"><i class="fa fa-cog"></i>Branch Setup</a></li> --}}
         @php
-            $websiteSetupRoutes = ['Admin.home_settings.edit','Admin.about_settings.edit','Admin.our_services.index','Admin.ongoing_activities.index','Admin.photo_gallery.index','Admin.upcoming_events.index','Admin.teams.index'];
+            $websiteSetupRoutes = ['Admin.home_settings.edit','Admin.about_settings.edit','Admin.our_services.index','Admin.ongoing_activities.index','Admin.photo_gallery.index','Admin.upcoming_events.index','Admin.teams.index','Admin.committee.index','Admin.membership.index'];
             $websiteSetupActive = false;
             foreach($websiteSetupRoutes as $r){ if(request()->routeIs($r)){ $websiteSetupActive = true; break; } }
         @endphp
@@ -83,6 +83,12 @@
             </a>
             <a href="{{ route('Admin.teams.index') }}" class="nav-link {{ request()->routeIs('Admin.teams.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
                 <i class="fa fa-users"></i> Team
+            </a>
+            <a href="{{ route('Admin.committee.index') }}" class="nav-link {{ request()->routeIs('Admin.committee.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
+                <i class="fa fa-user-tie"></i> Committee
+            </a>
+            <a href="{{ route('Admin.membership.index') }}" class="nav-link {{ request()->routeIs('Admin.membership.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
+                <i class="fa fa-user-check"></i> Memberships
             </a>
         </li>
 

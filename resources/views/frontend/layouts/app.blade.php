@@ -46,6 +46,7 @@
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('events') ? 'active' : '' }}" href="{{ route('events') }}">Events</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('activities') ? 'active' : '' }}" href="{{ route('activities') }}">Our Activities</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('gallery') ? 'active' : '' }}" href="{{ route('gallery') }}">Gallery</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('memberships.list') ? 'active' : '' }}" href="{{ route('memberships.list') }}">Members</a></li>
 
                     <!-- Committee Dropdown -->
                     <li class="nav-item dropdown">
