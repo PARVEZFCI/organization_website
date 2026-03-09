@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\PhotoGalleryController;
 use App\Http\Controllers\Admin\UpcomingEventController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\CommitteeController;
+use App\Http\Controllers\Admin\AdvisorController;
 use App\Http\Controllers\Admin\AdminMembershipFeeController;
 use App\Http\Controllers\Admin\AdminMembershipController;
 use App\Http\Controllers\PublicRegistrationController;
@@ -224,6 +225,7 @@ Route::group(['middleware' => 'admin_auth', 'as' => 'Admin.', 'prefix' => 'admin
     Route::resource('upcoming_events', UpcomingEventController::class);
     Route::resource('teams', TeamController::class);
     Route::resource('committee', CommitteeController::class);
+    Route::resource('advisors', AdvisorController::class);
     Route::resource('membership_fees', AdminMembershipFeeController::class);
     Route::resource('membership', AdminMembershipController::class);
 });

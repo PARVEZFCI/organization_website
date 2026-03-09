@@ -18,43 +18,28 @@
     <!-- Advisory Council Content -->
     <section class="container my-5">
         <div class="row g-4">
-            <!-- Advisor 1 -->
+            @forelse($advisors as $advisor)
+            <!-- Advisor {{ $loop->iteration }} -->
             <div class="col-lg-4 col-md-6">
                 <div class="bg-white rounded-3 shadow-sm text-center p-4">
                     <div class="mb-3">
-                        <img src="https://via.placeholder.com/150" alt="Advisor" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                        <img src="{{ asset($advisor->photo ?? 'https://via.placeholder.com/150') }}" 
+                             alt="{{ $advisor->name }}" 
+                             class="rounded-circle" 
+                             style="width: 150px; height: 150px; object-fit: cover;">
                     </div>
-                    <h5 class="mb-1" style="color: #1e40af;">Advisor Name</h5>
-                    <p class="text-primary mb-2"><strong>Chief Advisor</strong></p>
-                    <p class="small text-muted mb-0">Providing strategic guidance and wisdom</p>
+                    <h5 class="mb-1" style="color: #1e40af;">{{ $advisor->name }}</h5>
+                    <p class="text-primary mb-2"><strong>{{ $advisor->designation }}</strong></p>
+                    @if($advisor->description)
+                    <p class="small text-muted mb-0">{{ $advisor->description }}</p>
+                    @endif
                 </div>
             </div>
-
-            <!-- Advisor 2 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="bg-white rounded-3 shadow-sm text-center p-4">
-                    <div class="mb-3">
-                        <img src="https://via.placeholder.com/150" alt="Advisor" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
-                    </div>
-                    <h5 class="mb-1" style="color: #1e40af;">Advisor Name</h5>
-                    <p class="text-primary mb-2"><strong>Senior Advisor</strong></p>
-                    <p class="small text-muted mb-0">Supporting organizational development</p>
-                </div>
+            @empty
+            <div class="col-12 text-center">
+                <p class="text-muted">No advisors available at the moment.</p>
             </div>
-
-            <!-- Advisor 3 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="bg-white rounded-3 shadow-sm text-center p-4">
-                    <div class="mb-3">
-                        <img src="https://via.placeholder.com/150" alt="Advisor" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
-                    </div>
-                    <h5 class="mb-1" style="color: #1e40af;">Advisor Name</h5>
-                    <p class="text-primary mb-2"><strong>Advisor</strong></p>
-                    <p class="small text-muted mb-0">Contributing expertise and experience</p>
-                </div>
-            </div>
-
-            <!-- Add more advisors as needed -->
+            @endforelse
         </div>
     </section>
 @endsection

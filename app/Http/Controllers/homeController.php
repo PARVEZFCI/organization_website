@@ -18,6 +18,7 @@ use App\Models\UpcomingEvent;
 use App\Models\Membership;
 use App\Models\Committee;
 use App\Models\Blog;
+use App\Models\Advisor;
 use DB;
 use Illuminate\Support\Str;
 
@@ -262,7 +263,8 @@ class homeController extends Controller
 
     public function advisoryCouncil()
     {
-        return view('frontend.advisory-council');
+        $advisors = Advisor::active()->ordered()->get();
+        return view('frontend.advisory-council', compact('advisors'));
     }
 
 }

@@ -33,8 +33,8 @@
             <a href="#menu3" class="nav-link {{ $expenseActive ? 'active' : 'collapsed' }}" data-toggle="collapse"><i class="fa fa-fire"></i>Expense<span class="sub-ico"><i class="fa fa-angle-down"></i></span></a>
         </li>
         <li class="sub collapse {{ $expenseActive ? 'show' : '' }}" id="menu3">
-            <a href="{{route('Admin.expensename')}}" class="nav-link {{ request()->routeIs('Admin.expensename') ? 'active' : '' }}" data-parent="#menu3">Expense Name</a>
-            <a href="{{route('Admin.expense')}}" class="nav-link {{ request()->routeIs('Admin.expense') ? 'active' : '' }}" data-parent="#menu3">Expense Add</a>
+            <a href="{{route('Admin.expensename')}}" class="nav-link {{ request()->routeIs('Admin.expensename') ? 'active' : '' }}" data-parent="#menu3"><i class="fa fa-list"></i> Expense Name</a>
+            <a href="{{route('Admin.expense')}}" class="nav-link {{ request()->routeIs('Admin.expense') ? 'active' : '' }}" data-parent="#menu3"><i class="fa fa-plus-circle"></i> Expense Add</a>
 
         </li>
 
@@ -45,15 +45,15 @@
             <a href="#menu4" class="nav-link {{ $earningActive ? 'active' : 'collapsed' }}" data-toggle="collapse"><i class="fa fa-dollar-sign"></i>Earning<span class="sub-ico"><i class="fa fa-angle-down"></i></span></a>
         </li>
         <li class="sub collapse {{ $earningActive ? 'show' : '' }}" id="menu4">
-            <a href="{{route('Admin.earningname')}}" class="nav-link {{ request()->routeIs('Admin.earningname') ? 'active' : '' }}" data-parent="#menu4">Earning Name</a>
-            <a href="{{route('Admin.earning')}}" class="nav-link {{ request()->routeIs('Admin.earning') ? 'active' : '' }}" data-parent="#menu4">Earning</a>
+            <a href="{{route('Admin.earningname')}}" class="nav-link {{ request()->routeIs('Admin.earningname') ? 'active' : '' }}" data-parent="#menu4"><i class="fa fa-list"></i> Earning Name</a>
+            <a href="{{route('Admin.earning')}}" class="nav-link {{ request()->routeIs('Admin.earning') ? 'active' : '' }}" data-parent="#menu4"><i class="fa fa-plus-circle"></i> Earning</a>
 
         </li>
 
         <li class="nav-item"><a href="{{route('Admin.settings')}}" class="nav-link {{ request()->routeIs('Admin.settings') ? 'active' : '' }}"><i class="fa fa-cog"></i>Settings</a></li>
         {{-- <li class="nav-item"><a href="{{route('Admin.branch')}}" class="nav-link"><i class="fa fa-cog"></i>Branch Setup</a></li> --}}
         @php
-            $websiteSetupRoutes = ['Admin.home_settings.edit','Admin.about_settings.edit','Admin.our_services.index','Admin.ongoing_activities.index','Admin.photo_gallery.index','Admin.upcoming_events.index','Admin.teams.index','Admin.committee.index','Admin.membership.index'];
+            $websiteSetupRoutes = ['Admin.home_settings.edit','Admin.about_settings.edit','Admin.our_services.index','Admin.ongoing_activities.index','Admin.photo_gallery.index','Admin.upcoming_events.index','Admin.teams.index','Admin.committee.index','Admin.advisors.index','Admin.membership.index'];
             $websiteSetupActive = false;
             foreach($websiteSetupRoutes as $r){ if(request()->routeIs($r)){ $websiteSetupActive = true; break; } }
         @endphp
@@ -87,6 +87,9 @@
             <a href="{{ route('Admin.committee.index') }}" class="nav-link {{ request()->routeIs('Admin.committee.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
                 <i class="fa fa-user-tie"></i> Committee
             </a>
+            <a href="{{ route('Admin.advisors.index') }}" class="nav-link {{ request()->routeIs('Admin.advisors.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
+                <i class="fa fa-user-shield"></i> Advisory Council
+            </a>
             <a href="{{ route('Admin.membership.index') }}" class="nav-link {{ request()->routeIs('Admin.membership.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
                 <i class="fa fa-user-check"></i> Memberships
             </a>
@@ -97,7 +100,7 @@
 
 
         @endif
-        <li class="nav-item"><a href="{{url('admin/adminlogout')}}" class="nav-link"><i class="fa fa-logout"></i>Logout</a></li>
+        <li class="nav-item"><a href="{{url('admin/adminlogout')}}" class="nav-link"><i class="fa fa-sign-out"></i> Logout</a></li>
       </ul>
     </div>
     <!-- end the list -->
