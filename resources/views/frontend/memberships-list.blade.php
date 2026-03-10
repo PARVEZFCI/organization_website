@@ -16,7 +16,15 @@
     </section>
 
     <!-- Members List Content -->
-    <section class="container my-5">
+    <style>
+        /* prevent horizontal overflow on this page and ensure menu overlays the list on mobile */
+        body { overflow-x: hidden; }
+        .members-list-container { position: relative; z-index: 0; }
+        @media (max-width: 991px) {
+            .navbar-collapse, .navbar-collapse.show { z-index: 1050; }
+        }
+    </style>
+    <section class="container my-5 members-list-container">
         <div class="row mb-4">
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center">

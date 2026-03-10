@@ -18,6 +18,55 @@ class AdminMembershipController extends Controller
     }
 
     /**
+     * Show the form for creating a new member.
+     */
+    public function create()
+    {
+        return view('backend.membership.create');
+    }
+
+    /**
+     * Store a newly created member.
+     */
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'full_name'        => 'required|string|max:255',
+            'nid_passport_no'  => 'nullable|string|max:50',
+            'dob'              => 'nullable|date',
+            'gender'           => 'nullable|string|max:50',
+            'blood_group'      => 'nullable|string|max:10',
+            'present_address'  => 'nullable|string',
+            'permanent_address'=> 'nullable|string',
+            'profile_picture'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'course_name'      => 'nullable|string|max:255',
+            'intake_no'        => 'nullable|string|max:100',
+            'passing_year'     => 'nullable|integer|min:1900|max:' . (date('Y') + 1),
+            'mobile'           => 'required|string|max:50',
+            'email'            => 'nullable|email|max:255',
+            'occupation'       => 'nullable|string|max:255',
+            'organization'     => 'nullable|string|max:255',
+            'office_address'   => 'nullable|string',
+            'membership_type'  => 'required|string|in:General,Life,Associate',
+            'payment_type'     => 'required|string|in:membership_fee,monthly_gm,monthly_ec,lifetime,event_fee,donation',
+            'amount'           => 'required|integer|min:1',
+            'payment_method'   => 'required|string',
+            'status'           => 'required|string|in:active,inactive',
+        ]);
+
+        if ($request->hasFile('profile_picture')) {
+            $file     = $request->file('profile_picture');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('members'), $filename);
+            $data['profile_picture'] = 'members/' . $filename;
+        }
+
+        Membership::create($data);
+
+        return redirect()->route('Admin.membership.index')->with('success', 'Member added successfully!');
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
@@ -75,6 +124,27 @@ class AdminMembershipController extends Controller
         $membership->update($data);
 
         return redirect()->route('Admin.membership.index')->with('success', 'Membership updated successfully!');
+    }
+
+    /**
+     * Approve a membership (set status to active).
+     */
+    public function approve(string $id)
+    {
+        $membership = Membership::findOrFail($id);
+        $membership->update(['status' => 'active']);
+        return redirect()->route('Admin.membership.index')->with('success', 'Member approved successfully!');
+    }
+
+    /**
+     * Toggle active/inactive status.
+     */
+    public function toggleStatus(string $id)
+    {
+        $membership = Membership::findOrFail($id);
+        $membership->status = $membership->status === 'active' ? 'inactive' : 'active';
+        $membership->save();
+        return redirect()->route('Admin.membership.index')->with('success', 'Member status updated successfully!');
     }
 
     /**

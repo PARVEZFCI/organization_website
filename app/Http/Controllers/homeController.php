@@ -267,4 +267,10 @@ class homeController extends Controller
         return view('frontend.advisory-council', compact('advisors'));
     }
 
+    public function bylaws()
+    {
+        $bylaw = \App\Models\Bylaw::first();
+        return view('frontend.bylaws', compact('bylaw'));
+    }
+
 }

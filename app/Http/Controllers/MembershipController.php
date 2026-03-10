@@ -47,13 +47,10 @@ class MembershipController extends Controller
             'payment_type' => 'required|string|in:membership_fee,monthly_gm,monthly_ec,lifetime,event_fee,donation',
             'custom_amount' => 'nullable|integer|min:1',
             'payment_method' => 'required|string',
-            'status' => 'nullable|string|in:active,inactive',
         ]);
 
-        // Default status to active if not provided
-        if (!isset($data['status'])) {
-            $data['status'] = 'active';
-        }
+        // Always set status to inactive — admin must approve
+        $data['status'] = 'inactive';
 
         if ($request->hasFile('profile_picture')) {
             $file = $request->file('profile_picture');

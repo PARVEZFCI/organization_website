@@ -53,7 +53,7 @@
         <li class="nav-item"><a href="{{route('Admin.settings')}}" class="nav-link {{ request()->routeIs('Admin.settings') ? 'active' : '' }}"><i class="fa fa-cog"></i>Settings</a></li>
         {{-- <li class="nav-item"><a href="{{route('Admin.branch')}}" class="nav-link"><i class="fa fa-cog"></i>Branch Setup</a></li> --}}
         @php
-            $websiteSetupRoutes = ['Admin.home_settings.edit','Admin.about_settings.edit','Admin.our_services.index','Admin.ongoing_activities.index','Admin.photo_gallery.index','Admin.upcoming_events.index','Admin.teams.index','Admin.committee.index','Admin.advisors.index','Admin.membership.index'];
+            $websiteSetupRoutes = ['Admin.home_settings.edit','Admin.about_settings.edit','Admin.our_services.index','Admin.ongoing_activities.index','Admin.photo_gallery.index','Admin.upcoming_events.index','Admin.teams.index','Admin.committee.index','Admin.advisors.index','Admin.membership.index','Admin.bylaws.edit'];
             $websiteSetupActive = false;
             foreach($websiteSetupRoutes as $r){ if(request()->routeIs($r)){ $websiteSetupActive = true; break; } }
         @endphp
@@ -95,6 +95,9 @@
             </a>
             <a href="{{ route('Admin.membership_fees.index') }}" class="nav-link {{ request()->routeIs('Admin.membership_fees.*') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
                 <i class="fa fa-money"></i> Fee Management
+            </a>
+            <a href="{{ route('Admin.bylaws.edit') }}" class="nav-link {{ request()->routeIs('Admin.bylaws.edit') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
+                <i class="fa fa-file-alt"></i> Bylaws
             </a>
         </li>
 

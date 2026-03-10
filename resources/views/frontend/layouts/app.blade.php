@@ -47,16 +47,17 @@
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('events') ? 'active' : '' }}" href="{{ route('events') }}">Events</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('activities') ? 'active' : '' }}" href="{{ route('activities') }}">Our Activities</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('gallery') ? 'active' : '' }}" href="{{ route('gallery') }}">Gallery</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('memberships.list') ? 'active' : '' }}" href="{{ route('memberships.list') }}">Members</a></li>
 
                     <!-- Committee Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {{ request()->routeIs('executive-committee') || request()->routeIs('advisory-council') ? 'active' : '' }}" href="#" id="committeeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs('executive-committee') || request()->routeIs('advisory-council') || request()->routeIs('bylaws') || request()->routeIs('memberships.list') ? 'active' : '' }}" href="#" id="committeeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Committee
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="committeeDropdown">
                             <li><a class="dropdown-item {{ request()->routeIs('executive-committee') ? 'active' : '' }}" href="{{ route('executive-committee') }}">Executive Committee</a></li>
                             <li><a class="dropdown-item {{ request()->routeIs('advisory-council') ? 'active' : '' }}" href="{{ route('advisory-council') }}">Advisory Council</a></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('bylaws') ? 'active' : '' }}" href="{{ route('bylaws') }}">Bylaws</a></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('memberships.list') ? 'active' : '' }}" href="{{ route('memberships.list') }}">Members</a></li>
                         </ul>
                     </li>
 

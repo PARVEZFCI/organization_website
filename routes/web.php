@@ -36,6 +36,7 @@ use App\Http\Controllers\Admin\CommitteeController;
 use App\Http\Controllers\Admin\AdvisorController;
 use App\Http\Controllers\Admin\AdminMembershipFeeController;
 use App\Http\Controllers\Admin\AdminMembershipController;
+use App\Http\Controllers\Admin\BylawController;
 use App\Http\Controllers\PublicRegistrationController;
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\BkashPaymentController;
@@ -67,6 +68,7 @@ Route::get('/gallery', [homeController::class, 'gallery'])->name('gallery');
 // Committee Routes
 Route::get('/executive-committee', [homeController::class, 'executiveCommittee'])->name('executive-committee');
 Route::get('/advisory-council', [homeController::class, 'advisoryCouncil'])->name('advisory-council');
+Route::get('/bylaws', [homeController::class, 'bylaws'])->name('bylaws');
 
 // Other Routes
 Route::get('/contact', [homeController::class, 'contact'])->name('contact');
@@ -228,6 +230,12 @@ Route::group(['middleware' => 'admin_auth', 'as' => 'Admin.', 'prefix' => 'admin
     Route::resource('advisors', AdvisorController::class);
     Route::resource('membership_fees', AdminMembershipFeeController::class);
     Route::resource('membership', AdminMembershipController::class);
+    Route::post('membership/{id}/approve', [AdminMembershipController::class, 'approve'])->name('membership.approve');
+    Route::post('membership/{id}/toggle-status', [AdminMembershipController::class, 'toggleStatus'])->name('membership.toggle_status');
+
+    // Bylaws
+    Route::get('/bylaws/edit', [BylawController::class, 'edit'])->name('bylaws.edit');
+    Route::post('/bylaws/update', [BylawController::class, 'update'])->name('bylaws.update');
 });
 
 Route::get('loginuser', [UserController::class, 'loginuser'])->name('loginuser');
