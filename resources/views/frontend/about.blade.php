@@ -178,28 +178,10 @@
         </div>
     </section>
 
-    <!-- Section 4: Download Constitution -->
-    <section class="py-5" style="background-color: #f8fafc;">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="bg-white p-5 rounded-3 shadow-sm text-center">
-                        <i class="fas fa-file-pdf" style="font-size: 4rem; color: #dc2626; margin-bottom: 1.5rem;"></i>
-                        <h3 class="mb-3" style="color: #1e40af; font-weight: 600;">BESWA Constitution</h3>
-                        <p class="mb-4" style="color: #64748b; line-height: 1.8;">
-                            Read our official constitution document to learn more about BESWA's structure, rules, regulations, and governance framework.
-                        </p>
-                        <a href="{{ asset('backend/documents/constitution.pdf') }}" download class="btn btn-primary btn-lg" style="background: #3b82f6; border: none; padding: 12px 40px; border-radius: 8px;">
-                            <i class="fas fa-download me-2"></i>Download Constitution (PDF)
-                        </a>
-                        <p class="mt-3 mb-0 small text-muted">
-                            <i class="fas fa-info-circle me-1"></i>Last Updated: January 2024 | Size: 2.5 MB
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Section 4: Download Constitution - REMOVED, NOW ON HOME PAGE -->
+    {{-- <section class="py-5" style="background-color: #f8fafc;">
+        Constitution section has been moved to home page
+    </section> --}}
 
     <!-- Section 5: Message from President & Secretary -->
     <section class="container my-5">

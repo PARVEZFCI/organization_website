@@ -59,7 +59,7 @@
                   <div class="col-md-6">
 
                       <div class="form-group">
-                          <label for="name"> Company Name </label>
+                          <label for="name"> Institute Name English</label>
                           @if(isset($settings->company_name))
                            <input required="" type="text" class="form-control" value="{{$settings->company_name}}"  name="company_name" >
                           @else
@@ -70,7 +70,18 @@
 
                   <div class="col-md-6">
                       <div class="form-group">
-                          <label for="name"> Company Email </label>
+                          <label for="name"> Institute Name Bangla</label>
+                          @if(isset($settings->company_name_bn))
+                           <input type="text" class="form-control" value="{{$settings->company_name_bn}}"  name="company_name_bn" >
+                          @else
+                          <input type="text" class="form-control"  name="company_name_bn" >
+                          @endif
+                      </div>
+                  </div>
+
+                  <div class="col-md-6">
+                      <div class="form-group">
+                          <label for="name"> Institute Email </label>
                           @if(isset($settings->email))
                            <input required="" type="email" class="form-control" value="{{$settings->email}}"  name="email" >
                           @else
@@ -81,7 +92,7 @@
 
                   <div class="col-md-6">
                       <div class="form-group">
-                          <label for="name">Company Phone</label>
+                          <label for="name"> Institute Phone </label>
                           @if(isset($settings->phone))
                            <input required="" type="number" class="form-control" value="{{$settings->phone}}"  name="phone" >
                           @else
@@ -92,7 +103,7 @@
 
                   <div class="col-md-6">
                       <div class="form-group">
-                          <label for="name"> Company Address </label>
+                          <label for="name"> Institute Address </label>
                           @if(isset($settings->address))
                            <input required="" type="text" class="form-control" value="{{$settings->address}}"  name="address" >
                           @else
@@ -103,7 +114,7 @@
 
                   <div class="col-md-6">
                       <div class="form-group">
-                          <label for="name"> Company Logo </label>
+                          <label for="name"> Institute Logo </label>
                            <input  type="file" class="form-control"   name="logo" >
                       </div>
                   </div>

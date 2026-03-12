@@ -4,6 +4,9 @@
     @php
         $settings = DB::table('settings')->orderBy('id','DESC')->first();
         $ourServices = \App\Models\OurService::latest()->limit(6)->get();
+        $pinnedNews = \App\Models\Blog::where('is_pinned', true)->where('status', 'published')->latest()->get();
+        $pinnedEvents = \App\Models\UpcomingEvent::where('is_pinned', true)->latest()->get();
+        $marqueeItems = $pinnedNews->concat($pinnedEvents)->shuffle();
     @endphp
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,13 +29,19 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light navbar-white sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
                 @if(isset($settings) && $settings->logo)
                 <img src="{{ url($settings->logo) }}" alt="{{ $settings->company_name ?? 'Logo' }}">
                 @else
                 <img src="{{ url('img/DYC Circle Logo with Border.png') }}" alt="Logo">
                 @endif
             </a>
+            <!-- Mobile Institute Name (Centered) -->
+            <div class="d-lg-none text-center flex-grow-1 mobile-institute-name">
+                <span class="fw-bold text-primary" style="font-size: 0.9rem; line-height: 1.3;">
+                    {{ $settings->company_name_bn ?? 'বাংলাদেশ ইনস্টিটিউট অফ মেরিন টেকনোলজি' }}
+                </span>
+            </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -50,13 +59,13 @@
 
                     <!-- Committee Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {{ request()->routeIs('executive-committee') || request()->routeIs('advisory-council') || request()->routeIs('bylaws') || request()->routeIs('memberships.list') ? 'active' : '' }}" href="#" id="committeeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs('executive-committee') || request()->routeIs('advisory-council') || request()->routeIs('memberships.list') ? 'active' : '' }}" href="#" id="committeeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Committee
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="committeeDropdown">
                             <li><a class="dropdown-item {{ request()->routeIs('executive-committee') ? 'active' : '' }}" href="{{ route('executive-committee') }}">Executive Committee</a></li>
                             <li><a class="dropdown-item {{ request()->routeIs('advisory-council') ? 'active' : '' }}" href="{{ route('advisory-council') }}">Advisory Council</a></li>
-                            <li><a class="dropdown-item {{ request()->routeIs('bylaws') ? 'active' : '' }}" href="{{ route('bylaws') }}">Bylaws</a></li>
+                            {{-- <li><a class="dropdown-item {{ request()->routeIs('bylaws') ? 'active' : '' }}" href="{{ route('bylaws') }}">Bylaws</a></li> --}}
                             <li><a class="dropdown-item {{ request()->routeIs('memberships.list') ? 'active' : '' }}" href="{{ route('memberships.list') }}">Members</a></li>
                         </ul>
                     </li>
@@ -67,6 +76,7 @@
             </div>
         </div>
     </nav>
+
     <main>
         @yield('content')
     </main>

@@ -9,5 +9,5 @@ class Bylaw extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['content'];
+    protected $fillable = ['content', 'title', 'file_type', 'file_path'];
 }

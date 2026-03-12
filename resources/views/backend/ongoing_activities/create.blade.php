@@ -110,6 +110,8 @@
 @section('scripts')
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 <script>
-    CKEDITOR.replace('details');
+    if(typeof CKEDITOR !== 'undefined' && !CKEDITOR.instances['details']) {
+        CKEDITOR.replace('details');
+    }
 </script>
 @endsection

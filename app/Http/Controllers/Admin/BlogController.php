@@ -99,4 +99,17 @@ class BlogController extends Controller
         $blog->delete();
         return redirect()->route('Admin.blogs.index')->with('success', 'Blog deleted successfully!');
     }
+
+    /**
+     * Toggle pin status for blog
+     */
+    public function togglePin($id)
+    {
+        $blog = Blog::findOrFail($id);
+        $blog->is_pinned = !$blog->is_pinned;
+        $blog->save();
+        
+        $message = $blog->is_pinned ? 'Blog pinned to marquee!' : 'Blog unpinned from marquee!';
+        return redirect()->back()->with('success', $message);
+    }
 }

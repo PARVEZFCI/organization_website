@@ -23,17 +23,80 @@
         @media (max-width: 991px) {
             .navbar-collapse, .navbar-collapse.show { z-index: 1050; }
         }
+        /* Filter button group responsive */
+        @media (max-width: 768px) {
+            .btn-group {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+            .btn-group .btn {
+                border-radius: 0.25rem !important;
+                margin-bottom: 0.5rem;
+            }
+        }
+        /* Modern filter buttons */
+        .btn-group .btn {
+            border-radius: 50px !important;
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+            margin-right: 10px;
+            transition: all 0.25s ease;
+        }
+        .btn-group .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .btn-group .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #667eea);
+            border-color: transparent;
+        }
+        .btn-group .btn-outline-primary {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+        .btn-group .btn-outline-primary:hover {
+            background: rgba(59,130,246,0.05);
+        }
     </style>
     <section class="container my-5 members-list-container">
         <div class="row mb-4">
             <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
                     <h2 style="color: #1e40af;">Members Directory</h2>
                     <a href="{{ route('membership.form') }}" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Become a Member
                     </a>
                 </div>
-                <p class="text-muted">Total Members: <strong>{{ $memberships->total() }}</strong></p>
+                <p class="text-muted mb-3">
+                    Total 
+                    @if($selectedType == 'General')
+                        <strong>General</strong>
+                    @elseif($selectedType == 'Associate')
+                        <strong>Associate</strong>
+                    @else
+                        <strong>All</strong>
+                    @endif
+                    Members: <strong>{{ $memberships->total() }}</strong>
+                </p>
+                
+                <!-- Filter Buttons -->
+                <div class="mb-4">
+                    <div class="btn-group" role="group" aria-label="Member filter">
+                        <a href="{{ route('memberships.list') }}" 
+                           class="btn {{ $selectedType == '' ? 'btn-primary' : 'btn-outline-primary' }}">
+                            <i class="fas fa-users"></i> All Members
+                        </a>
+                        <a href="{{ route('memberships.list', ['type' => 'General']) }}" 
+                           class="btn {{ $selectedType == 'General' ? 'btn-primary' : 'btn-outline-primary' }}">
+                            <i class="fas fa-user"></i> General Member
+                        </a>
+                        <a href="{{ route('memberships.list', ['type' => 'Associate']) }}" 
+                           class="btn {{ $selectedType == 'Associate' ? 'btn-primary' : 'btn-outline-primary' }}">
+                            <i class="fas fa-handshake"></i> Associate Member
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -91,7 +154,7 @@
         @if($memberships->hasPages())
             <div class="row mt-5">
                 <div class="col-12 d-flex justify-content-center">
-                    {{ $memberships->links() }}
+                    {{ $memberships->appends(['type' => $selectedType])->links() }}
                 </div>
             </div>
         @endif

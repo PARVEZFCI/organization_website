@@ -37,6 +37,7 @@ use App\Http\Controllers\Admin\AdvisorController;
 use App\Http\Controllers\Admin\AdminMembershipFeeController;
 use App\Http\Controllers\Admin\AdminMembershipController;
 use App\Http\Controllers\Admin\BylawController;
+use App\Http\Controllers\Admin\LeadershipMessageController;
 use App\Http\Controllers\PublicRegistrationController;
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\BkashPaymentController;
@@ -68,7 +69,7 @@ Route::get('/gallery', [homeController::class, 'gallery'])->name('gallery');
 // Committee Routes
 Route::get('/executive-committee', [homeController::class, 'executiveCommittee'])->name('executive-committee');
 Route::get('/advisory-council', [homeController::class, 'advisoryCouncil'])->name('advisory-council');
-Route::get('/bylaws', [homeController::class, 'bylaws'])->name('bylaws');
+// Route::get('/bylaws', [homeController::class, 'bylaws'])->name('bylaws'); // Removed - Constitution now on home page
 
 // Other Routes
 Route::get('/contact', [homeController::class, 'contact'])->name('contact');
@@ -220,11 +221,13 @@ Route::group(['middleware' => 'admin_auth', 'as' => 'Admin.', 'prefix' => 'admin
     Route::resource('student_visas', StudentVisaController::class);
     Route::resource('student_reviews', StudentReviewController::class);
     Route::resource('blogs', BlogController::class);
+    Route::post('blogs/{id}/toggle-pin', [BlogController::class, 'togglePin'])->name('blogs.togglePin');
     Route::resource('our_services', OurServiceController::class);
     Route::resource('ongoing_activities', OngoingActivityController::class);
     Route::resource('photo_gallery', PhotoGalleryController::class);
     Route::post('photo_gallery/{id}/toggle-pin', [PhotoGalleryController::class, 'togglePin'])->name('photo_gallery.toggle_pin');
     Route::resource('upcoming_events', UpcomingEventController::class);
+    Route::post('upcoming_events/{id}/toggle-pin', [UpcomingEventController::class, 'togglePin'])->name('upcoming_events.togglePin');
     Route::resource('teams', TeamController::class);
     Route::resource('committee', CommitteeController::class);
     Route::resource('advisors', AdvisorController::class);
@@ -236,6 +239,9 @@ Route::group(['middleware' => 'admin_auth', 'as' => 'Admin.', 'prefix' => 'admin
     // Bylaws
     Route::get('/bylaws/edit', [BylawController::class, 'edit'])->name('bylaws.edit');
     Route::post('/bylaws/update', [BylawController::class, 'update'])->name('bylaws.update');
+
+    // Leadership Messages
+    Route::resource('leadership_messages', LeadershipMessageController::class);
 });
 
 Route::get('loginuser', [UserController::class, 'loginuser'])->name('loginuser');
