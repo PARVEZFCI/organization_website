@@ -45,10 +45,16 @@
         </div>
     </div>
     <!-- CKEditor CDN -->
-    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/4.25.1-lts/standard/ckeditor.js"></script>
     <script>
-        CKEDITOR.replace('director_message');
-        CKEDITOR.replace('who_we_are');
-        CKEDITOR.replace('mission_vission');
+        (function () {
+            var fields = ['director_message', 'who_we_are', 'mission_vission'];
+            fields.forEach(function (id) {
+                if (CKEDITOR.instances[id]) {
+                    CKEDITOR.instances[id].destroy(true);
+                }
+                CKEDITOR.replace(id);
+            });
+        })();
     </script>
 @endsection

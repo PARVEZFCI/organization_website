@@ -1,6 +1,8 @@
 $(function () {
     "use strict";
 
+    if (!document.getElementById('chart')) { return; }
+
     var myChart = Highcharts.chart('chart', {
         chart: {
             type: 'areaspline'
