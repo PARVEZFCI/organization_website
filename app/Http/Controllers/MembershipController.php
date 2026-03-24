@@ -8,11 +8,20 @@ use Illuminate\Support\Facades\Storage;
 
 class MembershipController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Only show active members on the public list
-        $memberships = Membership::where('status', 'active')->latest()->paginate(12);
-        return view('frontend.memberships-list', compact('memberships'));
+        $query = Membership::where('status', 'active');
+        
+        // Filter by membership type if provided
+        if ($request->has('type') && $request->type != '') {
+            $query->where('membership_type', $request->type);
+        }
+        
+        $memberships = $query->latest()->paginate(12);
+        $selectedType = $request->get('type', '');
+        
+        return view('frontend.memberships-list', compact('memberships', 'selectedType'));
     }
 
     public function create()

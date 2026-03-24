@@ -10,7 +10,8 @@
 <!-- <script src="{{asset('public/backend/js/jquery.min.js')}}"></script> -->
 <script src="{{asset('backend/js/tether.min.js')}}"></script>
 <script src="{{asset('backend/js/bootstrap.min.js')}}"></script>
-<script src="{{asset('backend/js/highcharts.js')}}"></script>
+<!-- highcharts not required on most admin pages; include in specific views when needed -->
+<!-- <script src="{{asset('backend/js/highcharts.js')}}"></script> -->
 <script src="{{asset('backend/js/chart.js')}}"></script>
 <script src="{{asset('backend/js/app.js')}}"></script>
 

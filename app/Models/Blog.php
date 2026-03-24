@@ -9,6 +9,6 @@ class Blog extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'title', 'slug', 'image', 'excerpt', 'content', 'status'
+        'title', 'slug', 'image', 'excerpt', 'content', 'status', 'is_pinned'
     ];
 }

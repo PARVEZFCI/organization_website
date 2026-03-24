@@ -23,6 +23,7 @@
                             <th>Title</th>
                             <th>Image</th>
                             <th>Status</th>
+                            <th>Pinned</th>
                             <th>Created At</th>
                             <th>Actions</th>
                         </tr>
@@ -38,9 +39,23 @@
                                 @endif
                             </td>
                             <td>{{ $blog->status ? 'Published' : 'Draft' }}</td>
+                            <td>
+                                @if($blog->is_pinned)
+                                    <span class="badge badge-success">Yes</span>
+                                @else
+                                    <span class="badge badge-secondary">No</span>
+                                @endif
+                            </td>
                             <td>{{ $blog->created_at->format('Y-m-d') }}</td>
                             <td>
                                 <a href="{{ route('Admin.blogs.edit', $blog->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                <form action="{{ route('Admin.blogs.togglePin', $blog->id) }}" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm {{ $blog->is_pinned ? 'btn-secondary' : 'btn-info' }}">
+                                        <i class="fa {{ $blog->is_pinned ? 'fa-thumbtack-slash' : 'fa-thumbtack' }}"></i>
+                                        {{ $blog->is_pinned ? 'Unpin' : 'Pin' }}
+                                    </button>
+                                </form>
                                 <form action="{{ route('Admin.blogs.destroy', $blog->id) }}" method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')

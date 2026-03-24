@@ -14,6 +14,7 @@ class UpcomingEvent extends Model
         'sub_title',
         'details',
         'date',
+        'is_pinned',
     ];
 
     protected $casts = [

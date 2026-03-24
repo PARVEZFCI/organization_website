@@ -5,78 +5,142 @@
 @section('content')
 @php
 $homeSettings = \App\Models\HomeSetting::first();
+$pinnedNews = \App\Models\Blog::where('is_pinned', true)->where('status', 'published')->latest()->get();
+$pinnedEvents = \App\Models\UpcomingEvent::where('is_pinned', true)->latest()->get();
+$marqueeItems = $pinnedNews->concat($pinnedEvents)->shuffle();
 @endphp
 
-{{-- ─────────────────────────────── HERO SLIDER ─────────────────────────────── --}}
-<section id="home" class="hero-section p-0">
-    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
-        <div class="carousel-indicators">
-            @if(isset($pinnedPhotos) && $pinnedPhotos->count() > 0)
-                @foreach($pinnedPhotos as $index => $photo)
-                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ $index }}" 
-                        class="{{ $index === 0 ? 'active' : '' }}" aria-current="{{ $index === 0 ? 'true' : 'false' }}" 
-                        aria-label="Slide {{ $index + 1 }}"></button>
-                @endforeach
-            @else
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            @endif
+{{-- ─────────────────────────────── HERO ─────────────────────────────── --}}
+
+@if($marqueeItems->count() > 0)
+<!-- News & Events Marquee -->
+<div class="news-marquee">
+    <div class="marquee-container">
+        <div class="marquee-icon">
+            <i class="fas fa-bullhorn"></i>
+            <span>Latest Updates</span>
         </div>
-        
-        <div class="carousel-inner">
-            @if(isset($pinnedPhotos) && $pinnedPhotos->count() > 0)
-                @foreach($pinnedPhotos as $index => $photo)
-                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                        <div class="hero-slide" style="background-image: url('/{{ $photo->image }}');">
-                            <div class="hero-overlay"></div>
-                            <div class="container h-100 position-relative" style="z-index: 2;">
-                                <div class="row h-100 align-items-center">
-                                    <div class="col-lg-8 col-md-10">
-                                        <div class="hero-content text-white">
-                                            <h1 class="display-4 fw-bold mb-4">{{ $homeSettings->title }}</h1>
-                                            <p class="lead mb-4">{{ $homeSettings->details }}</p>
-                                            <a href="{{ route('membership.form') }}" class="btn btn-primary-custom me-2">Become a Member</a>
-                                            <a href="{{ route('donation.page') }}" class="btn btn-outline-light">Payment Now</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="marquee-content">
+            <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
+                @foreach($marqueeItems as $item)
+                    <span class="marquee-item">
+                        @if($item instanceof \App\Models\Blog)
+                            <i class="fas fa-newspaper text-primary"></i> <strong>News:</strong> {{ $item->title }}
+                        @else
+                            <i class="fas fa-calendar-alt text-danger"></i> <strong>Event:</strong> {{ $item->title }}
+                            @if($item->date)
+                                ({{ $item->date->format('M d, Y') }})
+                            @endif
+                        @endif
+                    </span>
+                    <span class="marquee-separator">•</span>
                 @endforeach
-            @else
-                {{-- Fallback if no pinned photos --}}
-                <div class="carousel-item active">
-                    <div class="hero-slide" style="background: linear-gradient(#fff, rgba(130, 194, 255, 0.85)), url('{{ $homeSettings->banner_image }}');">
-                        <div class="hero-overlay"></div>
-                        <div class="container h-100 position-relative" style="z-index: 2;">
-                            <div class="row h-100 align-items-center">
-                                <div class="col-lg-8 col-md-10">
-                                    <div class="hero-content">
-                                        <h1 class="display-4 fw-bold mb-4">{{ $homeSettings->title }}</h1>
-                                        <p class="lead mb-4">{{ $homeSettings->details }}</p>
-                                        <a href="{{ route('membership.form') }}" class="btn btn-primary-custom me-2">Become a Member</a>
-                                        <a href="{{ route('donation.page') }}" class="btn btn-outline-custom">Payment Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            </marquee>
+        </div>
+    </div>
+</div>
+@endif
+
+<section id="home" class="hero-section p-0">
+    <div class="hero-slide" style="background: linear-gradient(#fff, rgba(130, 194, 255, 0.85)), url('{{ asset($homeSettings->banner_image) }}');">
+        <div class="hero-overlay"></div>
+        <div class="container h-100 position-relative" style="z-index: 2;">
+            <div class="row h-100 align-items-center">
+                <div class="col-lg-8 col-md-10">
+                    <div class="hero-content">
+                        <h1 class="display-4 fw-bold mb-4">{{ $homeSettings->title }}</h1>
+                        <p class="lead mb-4">{{ $homeSettings->details }}</p>
+                        <a href="{{ route('membership.form') }}" class="btn btn-primary-custom me-2">Become a Member</a>
+                        <a href="{{ route('donation.page') }}" class="btn btn-outline-custom">Payment Now</a>
                     </div>
                 </div>
-            @endif
+            </div>
         </div>
-        
-        @if(isset($pinnedPhotos) && $pinnedPhotos->count() > 1)
-            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        @endif
     </div>
 </section>
+
+
+@if(isset($pinnedPhotos) && $pinnedPhotos->count() > 0)
+<section class="hero-pinned-section py-3 py-md-4">
+    <div class="container">
+        <!-- Desktop Grid View -->
+        <div class="hero-pinned-grid d-none d-md-block">
+            <div class="row g-3">
+                @foreach($pinnedPhotos->take(6) as $photo)
+                    <div class="col-2">
+                        <div class="hero-pinned-item">
+                            <img src="/{{ $photo->image }}" alt="Pinned photo">
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Mobile Carousel -->
+        <div id="heroPinnedCarousel" class="carousel slide d-md-none" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @foreach($pinnedPhotos->take(6) as $index => $photo)
+                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                        <div class="hero-pinned-mobile-item">
+                            <img src="/{{ $photo->image }}" alt="Pinned photo {{ $index + 1 }}">
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            @if($pinnedPhotos->count() > 1)
+                <button class="carousel-control-prev" type="button" data-bs-target="#heroPinnedCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#heroPinnedCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            @endif
+        </div>
+    </div>
+</section>
+@elseif(isset($photoGalleries) && $photoGalleries->count() > 0)
+<section class="hero-pinned-section d-md-none mt-5 py-3 py-md-4">
+    <div class="container">
+        <!-- Desktop Grid View - Fallback to regular gallery -->
+        <div class="hero-pinned-grid d-none d-md-block">
+            <div class="row g-3">
+                @foreach($photoGalleries->take(6) as $photo)
+                    <div class="col-2">
+                        <div class="hero-pinned-item">
+                            <img src="/{{ $photo->image }}" alt="Gallery photo">
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Mobile Carousel - Fallback to regular gallery -->
+        <div id="heroPinnedCarousel" class="carousel slide d-md-none" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @foreach($photoGalleries->take(6) as $index => $photo)
+                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                        <div class="hero-pinned-mobile-item">
+                            <img src="/{{ $photo->image }}" alt="Gallery photo {{ $index + 1 }}">
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            @if($photoGalleries->count() > 1)
+                <button class="carousel-control-prev" type="button" data-bs-target="#heroPinnedCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#heroPinnedCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            @endif
+        </div>
+    </div>
+</section>
+@endif
 
 {{-- ─────────────────────────────── WHAT WE DO ─────────────────────────────── --}}
 <section id="services" class="container my-5">
@@ -135,113 +199,57 @@ $homeSettings = \App\Models\HomeSetting::first();
         <p class="section-subtitle">Inspiring words from our respected leaders</p>
         <div class="row g-4 mt-2">
 
-            {{-- President --}}
-            <div class="col-lg-4 col-md-6">
-                <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-                    <div class="p-0">
-                        @if(isset($president) && $president->image)
-                            <img src="/{{ $president->image }}" alt="{{ $president->name }}"
-                                 class="w-100" style="height: 240px; object-fit: cover;">
-                        @else
-                            <div class="d-flex align-items-center justify-content-center"
-                                 style="height:240px; background: linear-gradient(135deg,#667eea,#764ba2);">
-                                <i class="fas fa-user-tie fa-4x text-white opacity-75"></i>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0"
-                                 style="width:42px;height:42px;background:linear-gradient(135deg,#667eea,#764ba2);">
-                                <i class="fas fa-star text-white" style="font-size:.85rem;"></i>
-                            </div>
-                            <div>
-                                <h6 class="mb-0 fw-700">{{ $president->name ?? 'President' }}</h6>
-                                <small class="text-muted">{{ $president->position ?? 'President' }}</small>
-                            </div>
+            @forelse($leadershipMessages as $index => $leader)
+                @php
+                    $colors = [
+                        ['bg' => 'linear-gradient(135deg,#667eea,#764ba2)', 'btn' => 'primary', 'icon' => 'star'],
+                        ['bg' => 'linear-gradient(135deg,#0ea5e9,#0284c7)', 'btn' => 'info', 'icon' => 'pen-nib'],
+                        ['bg' => 'linear-gradient(135deg,#10b981,#059669)', 'btn' => 'success', 'icon' => 'lightbulb'],
+                        ['bg' => 'linear-gradient(135deg,#f59e0b,#d97706)', 'btn' => 'warning', 'icon' => 'handshake'],
+                        ['bg' => 'linear-gradient(135deg,#ef4444,#dc2626)', 'btn' => 'danger', 'icon' => 'heart'],
+                    ];
+                    $colorIndex = $index % count($colors);
+                    $color = $colors[$colorIndex];
+                @endphp
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+                        <div class="p-0">
+                            @if($leader->image)
+                                <img src="{{ asset($leader->image) }}" alt="{{ $leader->name }}"
+                                     class="w-100" style="height: 240px; object-fit: cover;">
+                            @else
+                                <div class="d-flex align-items-center justify-content-center"
+                                     style="height:240px; background: {{ $color['bg'] }};">
+                                    <i class="fas fa-user-tie fa-4x text-white opacity-75"></i>
+                                </div>
+                            @endif
                         </div>
-                        <i class="fas fa-quote-left text-primary opacity-25 fa-2x mb-2"></i>
-                        <p class="text-muted mb-0" style="font-size:.93rem;line-height:1.7;">
-                            {{ ($president && $president->description) ? Str::limit($president->description, 200) : 'We are committed to the welfare and growth of every BIMT alumnus. Together we shall build a stronger community.' }}
-                        </p>
-                    </div>
-                    <div class="px-4 pb-4">
-                        <a href="{{ route('message') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">Read Full Message</a>
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0"
+                                     style="width:42px;height:42px;background:{{ $color['bg'] }};">
+                                    <i class="fas fa-{{ $color['icon'] }} text-white" style="font-size:.85rem;"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-700">{{ $leader->name }}</h6>
+                                    <small class="text-muted">{{ $leader->designation }}</small>
+                                </div>
+                            </div>
+                            <i class="fas fa-quote-left text-{{ $color['btn'] }} opacity-25 fa-2x mb-2"></i>
+                            <p class="text-muted mb-0" style="font-size:.93rem;line-height:1.7;">
+                                {{ Str::limit($leader->message, 200) }}
+                            </p>
+                        </div>
+                        <div class="px-4 pb-4">
+                            <a href="{{ route('message') }}" class="btn btn-sm btn-outline-{{ $color['btn'] }} rounded-pill px-3">Read Full Message</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            {{-- General Secretary --}}
-            <div class="col-lg-4 col-md-6">
-                <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-                    <div class="p-0">
-                        @if(isset($generalSecretary) && $generalSecretary->image)
-                            <img src="/{{ $generalSecretary->image }}" alt="{{ $generalSecretary->name }}"
-                                 class="w-100" style="height: 240px; object-fit: cover;">
-                        @else
-                            <div class="d-flex align-items-center justify-content-center"
-                                 style="height:240px; background: linear-gradient(135deg,#0ea5e9,#0284c7);">
-                                <i class="fas fa-user-tie fa-4x text-white opacity-75"></i>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0"
-                                 style="width:42px;height:42px;background:linear-gradient(135deg,#0ea5e9,#0284c7);">
-                                <i class="fas fa-pen-nib text-white" style="font-size:.85rem;"></i>
-                            </div>
-                            <div>
-                                <h6 class="mb-0 fw-700">{{ $generalSecretary->name ?? 'General Secretary' }}</h6>
-                                <small class="text-muted">{{ $generalSecretary->position ?? 'General Secretary' }}</small>
-                            </div>
-                        </div>
-                        <i class="fas fa-quote-left text-info opacity-25 fa-2x mb-2"></i>
-                        <p class="text-muted mb-0" style="font-size:.93rem;line-height:1.7;">
-                            {{ ($generalSecretary && $generalSecretary->description) ? Str::limit($generalSecretary->description, 200) : 'Our organization thrives on the dedication of its members. Let us continue to serve one another with sincerity and commitment.' }}
-                        </p>
-                    </div>
-                    <div class="px-4 pb-4">
-                        <a href="{{ route('message') }}" class="btn btn-sm btn-outline-info rounded-pill px-3">Read Full Message</a>
-                    </div>
+            @empty
+                <div class="col-12">
+                    <p class="text-center text-muted">No leadership messages available at the moment.</p>
                 </div>
-            </div>
-
-            {{-- Chief Advisor --}}
-            <div class="col-lg-4 col-md-6">
-                <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-                    <div class="p-0">
-                        @if(isset($chiefAdvisor) && $chiefAdvisor->image)
-                            <img src="/{{ $chiefAdvisor->image }}" alt="{{ $chiefAdvisor->name }}"
-                                 class="w-100" style="height: 240px; object-fit: cover;">
-                        @else
-                            <div class="d-flex align-items-center justify-content-center"
-                                 style="height:240px; background: linear-gradient(135deg,#10b981,#059669);">
-                                <i class="fas fa-user-tie fa-4x text-white opacity-75"></i>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0"
-                                 style="width:42px;height:42px;background:linear-gradient(135deg,#10b981,#059669);">
-                                <i class="fas fa-lightbulb text-white" style="font-size:.85rem;"></i>
-                            </div>
-                            <div>
-                                <h6 class="mb-0 fw-700">{{ $chiefAdvisor->name ?? 'Chief Advisor' }}</h6>
-                                <small class="text-muted">{{ $chiefAdvisor->position ?? 'Chief Advisor' }}</small>
-                            </div>
-                        </div>
-                        <i class="fas fa-quote-left text-success opacity-25 fa-2x mb-2"></i>
-                        <p class="text-muted mb-0" style="font-size:.93rem;line-height:1.7;">
-                            {{ ($chiefAdvisor && $chiefAdvisor->description) ? Str::limit($chiefAdvisor->description, 200) : 'I urge each member to uphold the values of BESWA and be a beacon of change in your respective communities.' }}
-                        </p>
-                    </div>
-                    <div class="px-4 pb-4">
-                        <a href="{{ route('message') }}" class="btn btn-sm btn-outline-success rounded-pill px-3">Read Full Message</a>
-                    </div>
-                </div>
-            </div>
+            @endforelse
 
         </div>
     </div>
@@ -367,8 +375,8 @@ $homeSettings = \App\Models\HomeSetting::first();
         <div class="row align-items-center g-5 mt-2">
             <div class="col-lg-6">
                 <div class="position-relative">
-                    @if(isset($aboutSetting) && $aboutSetting->image)
-                    <img src="/{{ $aboutSetting->image }}" alt="BIMT Campus"
+                    @if(isset($aboutSetting) && $aboutSetting->campus_image)
+                    <img src="/{{ $aboutSetting->campus_image }}" alt="{{ $aboutSetting->campus_title ?? 'Campus' }}"
                          class="img-fluid rounded-4 shadow-lg" style="width:100%;height:380px;object-fit:cover;">
                     @else
                     <div class="rounded-4 shadow-lg d-flex align-items-center justify-content-center"
@@ -381,7 +389,7 @@ $homeSettings = \App\Models\HomeSetting::first();
                     @endif
                     <div class="position-absolute bottom-0 start-0 m-4 px-3 py-2 rounded-3 text-white"
                          style="background:rgba(0,0,0,.55);backdrop-filter:blur(4px);">
-                        <small><i class="fas fa-map-marker-alt me-1"></i> Bangladesh Institute of Management and Technology</small>
+                        <small><i class="fas fa-map-marker-alt me-1"></i> {{ $aboutSetting->campus_title ?? 'Bangladesh Institute of Management and Technology' }}</small>
                     </div>
                 </div>
             </div>
@@ -391,10 +399,10 @@ $homeSettings = \App\Models\HomeSetting::first();
                     <i class="fas fa-graduation-cap me-1"></i> Our Alma Mater
                 </span>
                 <h3 class="fw-bold mb-3" style="color:#1e293b;font-size:1.8rem;line-height:1.35;">
-                    Bangladesh Institute of Management<br>& Technology (BIMT)
+                    {{ $aboutSetting->campus_title ?? 'Bangladesh Institute of Management & Technology (BIMT)' }}
                 </h3>
                 <p class="text-muted mb-4" style="line-height:1.8;">
-                    BIMT has been a cornerstone of technical and management education in Bangladesh. Through years of dedicated teaching and hands-on learning, this institution has produced thousands of skilled professionals who are now making their mark across various industries.
+                    {{ $aboutSetting->campus_description ?? 'BIMT has been a cornerstone of technical and management education in Bangladesh. Through years of dedicated teaching and hands-on learning, this institution has produced thousands of skilled professionals who are now making their mark across various industries.' }}
                 </p>
                 <div class="row g-3 mb-4">
                     <div class="col-6">
@@ -466,6 +474,49 @@ $homeSettings = \App\Models\HomeSetting::first();
         @endif
     </div>
 </section>
+
+{{-- ─────────────────────────────── CONSTITUTION ─────────────────────────────── --}}
+@if(isset($constitution) && ($constitution->file_path || $constitution->content))
+<section class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="bg-white p-5 rounded-3 shadow-sm text-center">
+                <i class="fas fa-file-pdf" style="font-size: 4rem; color: #dc2626; margin-bottom: 1.5rem;"></i>
+                <h3 class="mb-3" style="color: #1e40af; font-weight: 600;">{{ $constitution->title ?? 'BESWA Constitution' }}</h3>
+                
+                @if($constitution->content)
+                <div class="mb-4 text-start" style="color: #64748b; line-height: 1.8;">
+                    {!! Str::limit(strip_tags($constitution->content), 200) !!}
+                </div>
+                @else
+                <p class="mb-4" style="color: #64748b; line-height: 1.8;">
+                    Read our official constitution document to learn more about BESWA's structure, rules, regulations, and governance framework.
+                </p>
+                @endif
+                
+                @if($constitution->file_path)
+                    @if($constitution->file_type == 'pdf')
+                        <a href="{{ asset($constitution->file_path) }}" download class="btn btn-primary btn-lg" style="background: #3b82f6; border: none; padding: 12px 40px; border-radius: 8px;">
+                            <i class="fas fa-download me-2"></i>Download Constitution (PDF)
+                        </a>
+                    @elseif($constitution->file_type == 'image')
+                        <div class="mb-3">
+                            <img src="{{ asset($constitution->file_path) }}" alt="{{ $constitution->title }}" class="img-fluid rounded-3 shadow-sm" style="max-height: 500px;">
+                        </div>
+                        <a href="{{ asset($constitution->file_path) }}" download class="btn btn-primary btn-lg" style="background: #3b82f6; border: none; padding: 12px 40px; border-radius: 8px;">
+                            <i class="fas fa-download me-2"></i>Download Image
+                        </a>
+                    @endif
+                @endif
+                
+                <p class="mt-3 mb-0 small text-muted">
+                    <i class="fas fa-info-circle me-1"></i>Last Updated: {{ $constitution->updated_at ? $constitution->updated_at->format('F Y') : 'Recently' }}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+@endif
 
 {{-- ─────────────────────────────── CORE VALUES ─────────────────────────────── --}}
 <section class="container my-5">
@@ -585,17 +636,6 @@ $homeSettings = \App\Models\HomeSetting::first();
 
 @push('styles')
 <style>
-    #heroCarousel {
-        width: 100%;
-        overflow: hidden;
-    }
-    
-    .carousel-inner,
-    .carousel-item {
-        width: 100%;
-        height: 100%;
-    }
-    
     .hero-slide {
         position: relative;
         display: flex;
@@ -618,43 +658,71 @@ $homeSettings = \App\Models\HomeSetting::first();
         z-index: 1;
     }
     
-    .carousel-item {
-        transition: transform 1s ease-in-out;
-    }
-    
-    .carousel-fade .carousel-item {
-        opacity: 0;
-        transition: opacity 1s ease-in-out;
-    }
-    
-    .carousel-fade .carousel-item.active {
-        opacity: 1;
-    }
-    
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-        background-color: rgba(0, 0, 0, 0.5);
-        border-radius: 50%;
-        padding: 20px;
-    }
-    
-    .carousel-indicators {
-        z-index: 3;
-    }
-    
-    .carousel-indicators button {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        margin: 0 4px;
-    }
-    
     .hero-content h1 {
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
     
     .hero-content p {
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-pinned-section {
+        background: #f8faff;
+    }
+
+    .hero-pinned-item {
+        border-radius: 16px;
+        overflow: hidden;
+        background: #ffffff;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        height: 100%;
+    }
+
+    .hero-pinned-item img {
+        width: 100%;
+        height: 110px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .hero-pinned-mobile-item {
+        margin: 0 auto;
+        width: min(92%, 380px);
+        border-radius: 16px;
+        overflow: hidden;
+        background: #ffffff;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+        border: 1px solid rgba(148, 163, 184, 0.22);
+    }
+
+    .hero-pinned-mobile-item img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        display: block;
+    }
+
+    #heroPinnedCarousel {
+        position: relative;
+    }
+
+    #heroPinnedCarousel .carousel-control-prev,
+    #heroPinnedCarousel .carousel-control-next {
+        width: 50px;
+    }
+
+    #heroPinnedCarousel .carousel-control-prev-icon,
+    #heroPinnedCarousel .carousel-control-next-icon {
+        background-color: rgba(15, 23, 42, 0.6);
+        border-radius: 50%;
+        padding: 18px;
+        width: 40px;
+        height: 40px;
+    }
+
+    #heroPinnedCarousel .carousel-item {
+        transition: transform 0.6s ease-in-out;
     }
     
     @media (max-width: 768px) {
@@ -665,21 +733,26 @@ $homeSettings = \App\Models\HomeSetting::first();
         .hero-content h1 {
             font-size: 2rem;
         }
+
+        .hero-content p {
+            font-size: 1rem;
+        }
     }
 </style>
 @endpush
 
 @push('scripts')
 <script>
-    // Initialize carousel
     document.addEventListener('DOMContentLoaded', function() {
-        var heroCarousel = document.getElementById('heroCarousel');
-        if (heroCarousel) {
-            new bootstrap.Carousel(heroCarousel, {
-                interval: 5000,
+        // Mobile pinned photos carousel auto-play
+        var heroPinnedCarousel = document.getElementById('heroPinnedCarousel');
+        if (heroPinnedCarousel) {
+            var carousel = new bootstrap.Carousel(heroPinnedCarousel, {
+                interval: 3000,
                 ride: 'carousel',
                 pause: 'hover',
-                wrap: true
+                wrap: true,
+                touch: true
             });
         }
     });

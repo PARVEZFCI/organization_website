@@ -88,4 +88,17 @@ class UpcomingEventController extends Controller
 
         return redirect()->route('Admin.upcoming_events.index')->with('success', 'Event deleted successfully!');
     }
+
+    /**
+     * Toggle pin status for event
+     */
+    public function togglePin($id)
+    {
+        $event = UpcomingEvent::findOrFail($id);
+        $event->is_pinned = !$event->is_pinned;
+        $event->save();
+        
+        $message = $event->is_pinned ? 'Event pinned to marquee!' : 'Event unpinned from marquee!';
+        return redirect()->back()->with('success', $message);
+    }
 }

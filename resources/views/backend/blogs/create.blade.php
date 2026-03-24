@@ -42,5 +42,9 @@
     </div>
 </div>
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
-<script>CKEDITOR.replace('content');</script>
+<script>
+    if(typeof CKEDITOR !== 'undefined' && !CKEDITOR.instances['content']) {
+        CKEDITOR.replace('content');
+    }
+</script>
 @endsection

@@ -55,6 +55,7 @@
                                             <th>Title</th>
                                             <th>Sub Title</th>
                                             <th>Date</th>
+                                            <th>Pinned</th>
                                             <th>Details</th>
                                             <th>Actions</th>
                                         </tr>
@@ -66,12 +67,27 @@
                                                 <td>{{ $event->title }}</td>
                                                 <td>{{ $event->sub_title ?? 'N/A' }}</td>
                                                 <td>{{ $event->date->format('M d, Y') }}</td>
+                                                <td>
+                                                    @if($event->is_pinned)
+                                                        <span class="badge badge-success">Yes</span>
+                                                    @else
+                                                        <span class="badge badge-secondary">No</span>
+                                                    @endif
+                                                </td>
                                                 <td>{!! Str::limit($event->details, 50) ?? 'N/A' !!}</td>
                                                 <td>
                                                     <button class="btn btn-sm btn-primary" data-toggle="modal"
                                                         data-target="#editModal{{ $event->id }}">
                                                         <i class="fa fa-edit"></i> Edit
                                                     </button>
+                                                    <form action="{{ route('Admin.upcoming_events.togglePin', $event->id) }}"
+                                                        method="POST" style="display:inline-block;">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm {{ $event->is_pinned ? 'btn-secondary' : 'btn-info' }}">
+                                                            <i class="fa {{ $event->is_pinned ? 'fa-thumbtack-slash' : 'fa-thumbtack' }}"></i>
+                                                            {{ $event->is_pinned ? 'Unpin' : 'Pin' }}
+                                                        </button>
+                                                    </form>
                                                     <form action="{{ route('Admin.upcoming_events.destroy', $event->id) }}"
                                                         method="POST" style="display:inline-block;">
                                                         @csrf

@@ -10,8 +10,11 @@ class AboutSetting extends Model
     use HasFactory;
 
     protected $fillable = [
-        'director_message',
+        // 'director_message', removed per request
         'who_we_are',
         'mission_vission',
+        'campus_title',
+        'campus_description',
+        'campus_image',
     ];
 }

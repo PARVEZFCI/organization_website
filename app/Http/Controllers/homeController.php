@@ -66,10 +66,14 @@ class homeController extends Controller
         $pinnedPhotos = PhotoGallery::where('is_pinned', true)->latest()->get();
         $upcomingEvents = UpcomingEvent::orderBy('date', 'asc')->limit(6)->get();
         $latestBlogs = Blog::where('status', 'published')->latest()->limit(3)->get();
-        $president = Committee::whereRaw('LOWER(position) LIKE ?', ['%president%'])->first();
-        $generalSecretary = Committee::whereRaw('LOWER(position) LIKE ?', ['%general secretary%'])->orWhereRaw('LOWER(position) LIKE ?', ['%gs%'])->first();
-        $chiefAdvisor = Committee::whereRaw('LOWER(position) LIKE ?', ['%chief advisor%'])->orWhereRaw('LOWER(position) LIKE ?', ['%advisor%'])->first();
-        return view('frontend.home', compact('homeSetting', 'aboutSetting', 'countries', 'whyChooses', 'courses','studentReviews','studentVisas', 'ourServices', 'ongoingActivities', 'photoGalleries', 'pinnedPhotos', 'upcomingEvents', 'latestBlogs', 'president', 'generalSecretary', 'chiefAdvisor'));
+        
+        // Dynamic leadership messages from database
+        $leadershipMessages = \App\Models\LeadershipMessage::active()->ordered()->get();
+        
+        // Constitution/Bylaw data
+        $constitution = \App\Models\Bylaw::first();
+        
+        return view('frontend.home', compact('homeSetting', 'aboutSetting', 'countries', 'whyChooses', 'courses','studentReviews','studentVisas', 'ourServices', 'ongoingActivities', 'photoGalleries', 'pinnedPhotos', 'upcomingEvents', 'latestBlogs', 'leadershipMessages', 'constitution'));
     }
 
     public function Procedure()
@@ -125,6 +129,7 @@ class homeController extends Controller
     {
         $validated = $request->validate([
             'company_name' => 'required|string|max:255',
+            'company_name_bn' => 'nullable|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:255',
@@ -267,10 +272,11 @@ class homeController extends Controller
         return view('frontend.advisory-council', compact('advisors'));
     }
 
-    public function bylaws()
-    {
-        $bylaw = \App\Models\Bylaw::first();
-        return view('frontend.bylaws', compact('bylaw'));
-    }
+    // Bylaws page removed - Constitution now displayed on home page
+    // public function bylaws()
+    // {
+    //     $bylaw = \App\Models\Bylaw::first();
+    //     return view('frontend.bylaws', compact('bylaw'));
+    // }
 
 }
