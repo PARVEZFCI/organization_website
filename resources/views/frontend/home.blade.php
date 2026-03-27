@@ -7,7 +7,7 @@
 {{-- ─────────────────────────────── HERO ─────────────────────────────── --}}
 
 @if(isset($pinnedPhotos) && $pinnedPhotos->count() > 0)
-<section class="hero-pinned-section py-3 py-md-4">
+<section class="hero-pinned-section py-3">
     <div class="container">
         <!-- Desktop Grid View -->
         <div class="hero-pinned-grid d-none d-md-block">
@@ -47,7 +47,7 @@
     </div>
 </section>
 @elseif(isset($photoGalleries) && $photoGalleries->count() > 0)
-<section class="hero-pinned-section d-md-none mt-5 py-3 py-md-4">
+<section class="hero-pinned-section d-md-none mt-5 py-3">
     <div class="container">
         <!-- Desktop Grid View - Fallback to regular gallery -->
         <div class="hero-pinned-grid d-none d-md-block">
@@ -116,7 +116,7 @@
 </div>
 @endif
 
-<section id="home" class="hero-section p-0">
+<section id="home" class="hero-section p-0 mt-0">
     <div class="hero-slide" style="background: linear-gradient(#fff, rgba(130, 194, 255, 0.85)), url('{{ asset($homeSetting->banner_image) }}');">
         <div class="hero-overlay"></div>
         <div class="container h-100 position-relative" style="z-index: 2;">
@@ -635,10 +635,11 @@
         display: flex;
         align-items: center;
         width: 100%;
-        min-height: 600px;
+        min-height: 470px;
         background-size: cover !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
+
     }
 
     .hero-overlay {
@@ -652,6 +653,9 @@
         z-index: 1;
     }
 
+    /* .hero-content{
+        margin-top: -380px;
+    } */
     .hero-content h1 {
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
@@ -722,6 +726,7 @@
     @media (max-width: 768px) {
         .hero-slide {
             min-height: 348px;
+            margin-top: 0px !important;
         }
 
         .hero-content h1 {
