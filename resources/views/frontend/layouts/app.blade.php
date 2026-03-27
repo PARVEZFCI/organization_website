@@ -19,37 +19,40 @@
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light navbar-white sticky-top">
+    <!-- Header Top Section -->
+    <header class="header-top">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-                @if(isset($settings) && $settings->logo)
-                <img src="{{ url($settings->logo) }}" alt="{{ $settings->company_name ?? 'Logo' }}">
-                @else
-                <img src="{{ url('img/DYC Circle Logo with Border.png') }}" alt="Logo">
-                @endif
-            </a>
-            <!-- Mobile Institute Name (Centered) -->
-            <div class="d-lg-none text-center flex-grow-1 mobile-institute-name">
-                <span class="fw-bold text-primary" style="font-size: 0.9rem; line-height: 1.3;">
-                    {{ $settings->company_name_bn ?? 'বাংলাদেশ ইনস্টিটিউট অফ মেরিন টেকনোলজি' }}
-                </span>
+            <div class="header-content">
+                <a href="{{ url('/') }}" class="logo-section">
+                    @if(isset($settings) && $settings->logo)
+                    <img src="{{ url($settings->logo) }}" alt="{{ $settings->company_name ?? 'Logo' }}" class="logo-img">
+                    @else
+                    <img src="{{ asset('img/DYC Circle Logo with Border.png') }}" alt="Logo" class="logo-img">
+                    @endif
+                    <div class="organization-names">
+                        <p class="org-name-bn">{{ $settings->company_name_bn ?? 'বিআইএমটি এক্স-স্টুডেন্টস ওয়েলফেয়ার অ্যাসোসিয়েশন' }}</p>
+                        <p class="org-name-en">{{ $settings->company_name ?? 'BIMT Ex-Students Welfare Association' }}</p>
+                    </div>
+                </a>
             </div>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        </div>
+    </header>
+
+    <!-- Navbar Section -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ url('/') }}">Home</a></li>
-
-                    <!-- About Link -->
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">About</a></li>
-
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('news') ? 'active' : '' }}" href="{{ route('news') }}">News</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('events') ? 'active' : '' }}" href="{{ route('events') }}">Events</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('activities') ? 'active' : '' }}" href="{{ route('activities') }}">Our Activities</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('gallery') ? 'active' : '' }}" href="{{ route('gallery') }}">Gallery</a></li>
-
+                    
                     <!-- Committee Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {{ request()->routeIs('executive-committee') || request()->routeIs('advisory-council') || request()->routeIs('memberships.list') ? 'active' : '' }}" href="#" id="committeeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -58,7 +61,6 @@
                         <ul class="dropdown-menu" aria-labelledby="committeeDropdown">
                             <li><a class="dropdown-item {{ request()->routeIs('executive-committee') ? 'active' : '' }}" href="{{ route('executive-committee') }}">Executive Committee</a></li>
                             <li><a class="dropdown-item {{ request()->routeIs('advisory-council') ? 'active' : '' }}" href="{{ route('advisory-council') }}">Advisory Council</a></li>
-                            {{-- <li><a class="dropdown-item {{ request()->routeIs('bylaws') ? 'active' : '' }}" href="{{ route('bylaws') }}">Bylaws</a></li> --}}
                             <li><a class="dropdown-item {{ request()->routeIs('memberships.list') ? 'active' : '' }}" href="{{ route('memberships.list') }}">Members</a></li>
                         </ul>
                     </li>

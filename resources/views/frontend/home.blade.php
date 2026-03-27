@@ -6,54 +6,6 @@
 
 {{-- ─────────────────────────────── HERO ─────────────────────────────── --}}
 
-@if($marqueeItems->count() > 0)
-<!-- News & Events Marquee -->
-<div class="news-marquee">
-    <div class="marquee-container">
-        <div class="marquee-icon">
-            <i class="fas fa-bullhorn"></i>
-            <span>Latest Updates</span>
-        </div>
-        <div class="marquee-content">
-            <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
-                @foreach($marqueeItems as $item)
-                    <span class="marquee-item">
-                        @if($item instanceof \App\Models\Blog)
-                            <i class="fas fa-newspaper text-primary"></i> <strong>News:</strong> {{ $item->title }}
-                        @else
-                            <i class="fas fa-calendar-alt text-danger"></i> <strong>Event:</strong> {{ $item->title }}
-                            @if($item->date)
-                                ({{ $item->date->format('M d, Y') }})
-                            @endif
-                        @endif
-                    </span>
-                    <span class="marquee-separator">•</span>
-                @endforeach
-            </marquee>
-        </div>
-    </div>
-</div>
-@endif
-
-<section id="home" class="hero-section p-0">
-    <div class="hero-slide" style="background: linear-gradient(#fff, rgba(130, 194, 255, 0.85)), url('{{ asset($homeSetting->banner_image) }}');">
-        <div class="hero-overlay"></div>
-        <div class="container h-100 position-relative" style="z-index: 2;">
-            <div class="row h-100 align-items-center">
-                <div class="col-lg-8 col-md-10">
-                    <div class="hero-content">
-                        <h1 class="display-4 fw-bold mb-4">{{ $homeSetting->title }}</h1>
-                        <p class="lead mb-4">{{ $homeSetting->details }}</p>
-                        <a href="{{ route('membership.form') }}" class="btn btn-primary-custom me-2">Become a Member</a>
-                        <a href="{{ route('donation.page') }}" class="btn btn-outline-custom">Payment Now</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
 @if(isset($pinnedPhotos) && $pinnedPhotos->count() > 0)
 <section class="hero-pinned-section py-3 py-md-4">
     <div class="container">
@@ -135,6 +87,54 @@
     </div>
 </section>
 @endif
+@if($marqueeItems->count() > 0)
+<!-- News & Events Marquee -->
+<div class="news-marquee">
+    <div class="marquee-container">
+        <div class="marquee-icon">
+            <i class="fas fa-bullhorn"></i>
+            <span>Latest Updates</span>
+        </div>
+        <div class="marquee-content">
+            <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
+                @foreach($marqueeItems as $item)
+                    <span class="marquee-item">
+                        @if($item instanceof \App\Models\Blog)
+                            <i class="fas fa-newspaper text-primary"></i> <strong>News:</strong> {{ $item->title }}
+                        @else
+                            <i class="fas fa-calendar-alt text-danger"></i> <strong>Event:</strong> {{ $item->title }}
+                            @if($item->date)
+                                ({{ $item->date->format('M d, Y') }})
+                            @endif
+                        @endif
+                    </span>
+                    <span class="marquee-separator">•</span>
+                @endforeach
+            </marquee>
+        </div>
+    </div>
+</div>
+@endif
+
+<section id="home" class="hero-section p-0">
+    <div class="hero-slide" style="background: linear-gradient(#fff, rgba(130, 194, 255, 0.85)), url('{{ asset($homeSetting->banner_image) }}');">
+        <div class="hero-overlay"></div>
+        <div class="container h-100 position-relative" style="z-index: 2;">
+            <div class="row h-100 align-items-center">
+                <div class="col-lg-8 col-md-10">
+                    <div class="hero-content">
+                        <h1 class="display-4 fw-bold mb-4">{{ $homeSetting->title }}</h1>
+                        <p class="lead mb-4">{{ $homeSetting->details }}</p>
+                        <a href="{{ route('membership.form') }}" class="btn btn-primary-custom me-2">Become a Member</a>
+                        <a href="{{ route('donation.page') }}" class="btn btn-outline-custom">Payment Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
 
 {{-- ─────────────────────────────── WHAT WE DO ─────────────────────────────── --}}
 <section id="services" class="container my-5">
@@ -721,7 +721,7 @@
 
     @media (max-width: 768px) {
         .hero-slide {
-            min-height: 400px;
+            min-height: 348px;
         }
 
         .hero-content h1 {
