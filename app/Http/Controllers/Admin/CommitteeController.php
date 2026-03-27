@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Committee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class CommitteeController extends Controller
 {
@@ -52,6 +53,7 @@ class CommitteeController extends Controller
 
         Committee::create($data);
 
+        Cache::forget('executive_committee');
         return redirect()->route('Admin.committee.index')->with('success', 'Committee member created successfully!');
     }
 
@@ -97,6 +99,7 @@ class CommitteeController extends Controller
 
         $committee->update($data);
 
+        Cache::forget('executive_committee');
         return redirect()->route('Admin.committee.index')->with('success', 'Committee member updated successfully!');
     }
 
@@ -114,6 +117,7 @@ class CommitteeController extends Controller
 
         $committee->delete();
 
+        Cache::forget('executive_committee');
         return redirect()->route('Admin.committee.index')->with('success', 'Committee member deleted successfully!');
     }
 }

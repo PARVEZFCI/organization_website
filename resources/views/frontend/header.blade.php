@@ -48,7 +48,9 @@
     </nav>
 
        @php
-         $data = DB::table('settings')->orderBy('id','DESC')->first();
+         $data = Cache::remember('site_settings', 3600, function () {
+             return DB::table('settings')->orderBy('id','DESC')->first();
+         });
     @endphp
     <div class="logo-container text-center" style="background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%); padding: 1.25rem 0; border-bottom: 3px solid #3b82f6;">
         <div class="container">

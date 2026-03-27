@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Bylaw;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class BylawController extends Controller
 {
@@ -49,6 +50,7 @@ class BylawController extends Controller
 
         $bylaw->save();
 
+        Cache::forget('constitution');
         return redirect()->back()->with('success', 'Constitution updated successfully!');
     }
 }

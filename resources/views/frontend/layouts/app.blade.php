@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    @php
-        $settings = DB::table('settings')->orderBy('id','DESC')->first();
-        $ourServices = \App\Models\OurService::latest()->limit(6)->get();
-        $pinnedNews = \App\Models\Blog::where('is_pinned', true)->where('status', 'published')->latest()->get();
-        $pinnedEvents = \App\Models\UpcomingEvent::where('is_pinned', true)->latest()->get();
-        $marqueeItems = $pinnedNews->concat($pinnedEvents)->shuffle();
-    @endphp
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', isset($settings) && $settings->company_name ? $settings->company_name : 'Empowering Youth, Building the Future')</title>

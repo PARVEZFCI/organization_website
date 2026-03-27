@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Advisor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AdvisorController extends Controller
 {
@@ -51,6 +52,7 @@ class AdvisorController extends Controller
 
         Advisor::create($data);
 
+        Cache::forget('advisory_council');
         return redirect()->route('Admin.advisors.index')->with('success', 'Advisor created successfully!');
     }
 
@@ -105,6 +107,7 @@ class AdvisorController extends Controller
 
         $advisor->update($data);
 
+        Cache::forget('advisory_council');
         return redirect()->route('Admin.advisors.index')->with('success', 'Advisor updated successfully!');
     }
 
@@ -122,6 +125,7 @@ class AdvisorController extends Controller
 
         $advisor->delete();
 
+        Cache::forget('advisory_council');
         return redirect()->route('Admin.advisors.index')->with('success', 'Advisor deleted successfully!');
     }
 }

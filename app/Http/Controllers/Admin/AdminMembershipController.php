@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Membership;
+use App\Services\MonthlyPaymentService;
 use Illuminate\Http\Request;
 
 class AdminMembershipController extends Controller
@@ -133,6 +134,13 @@ class AdminMembershipController extends Controller
     {
         $membership = Membership::findOrFail($id);
         $membership->update(['status' => 'active']);
+
+        // Generate monthly payments for General members
+        if ($membership->requiresMonthlyPayments()) {
+            $paymentService = new MonthlyPaymentService();
+            $paymentService->generateMonthlyPayments($membership, 12); // Generate 12 months
+        }
+
         return redirect()->route('Admin.membership.index')->with('success', 'Member approved successfully!');
     }
 

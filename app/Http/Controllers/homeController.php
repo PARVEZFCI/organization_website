@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Branch;
 use App\Models\HomeSetting;
 use App\Models\AboutSetting;
@@ -53,27 +54,65 @@ class homeController extends Controller
     }
     public function home()
     {
-        $homeSetting = HomeSetting::first();
-        $aboutSetting = AboutSetting::first();
-        $countries = Country::all();
-        $whyChooses = \App\Models\WhyChoose::all();
-        $courses = CourseSetup::with('category')->get();
-        $studentVisas = StudentVisa::all();
-        $studentReviews = StudentReview::orderBy('created_at', 'desc')->limit(6)->get();
-        $ourServices = OurService::latest()->get();
-        $ongoingActivities = OngoingActivity::latest()->limit(6)->get();
-        $photoGalleries = PhotoGallery::latest()->limit(8)->get();
-        $pinnedPhotos = PhotoGallery::where('is_pinned', true)->latest()->get();
-        $upcomingEvents = UpcomingEvent::orderBy('date', 'asc')->limit(6)->get();
-        $latestBlogs = Blog::where('status', 'published')->latest()->limit(3)->get();
-        
-        // Dynamic leadership messages from database
-        $leadershipMessages = \App\Models\LeadershipMessage::active()->ordered()->get();
-        
-        // Constitution/Bylaw data
-        $constitution = \App\Models\Bylaw::first();
-        
-        return view('frontend.home', compact('homeSetting', 'aboutSetting', 'countries', 'whyChooses', 'courses','studentReviews','studentVisas', 'ourServices', 'ongoingActivities', 'photoGalleries', 'pinnedPhotos', 'upcomingEvents', 'latestBlogs', 'leadershipMessages', 'constitution'));
+        $homeSetting = Cache::remember('home_setting', 3600, function () {
+            return HomeSetting::first();
+        });
+
+        $aboutSetting = Cache::remember('about_setting', 3600, function () {
+            return AboutSetting::select('id', 'campus_image', 'campus_title', 'campus_description')->first();
+        });
+
+        $ourServices = Cache::remember('home_services', 3600, function () {
+            return OurService::latest()->select('id', 'title', 'sub_title', 'icon')->limit(6)->get();
+        });
+
+        $ongoingActivities = OngoingActivity::latest()
+            ->select('id', 'title', 'sub_title', 'thumbnail')
+            ->limit(6)->get();
+
+        $photoGalleries = PhotoGallery::latest()
+            ->select('id', 'image', 'is_pinned')
+            ->limit(8)->get();
+
+        $pinnedPhotos = PhotoGallery::where('is_pinned', true)
+            ->latest()
+            ->select('id', 'image')
+            ->limit(6)->get();
+
+        $upcomingEvents = UpcomingEvent::orderBy('date', 'asc')
+            ->select('id', 'title', 'sub_title', 'date', 'is_pinned')
+            ->limit(6)->get();
+
+        $latestBlogs = Blog::where('status', 'published')
+            ->latest()
+            ->select('id', 'title', 'excerpt', 'content', 'image', 'is_pinned', 'created_at')
+            ->limit(3)->get();
+
+        $pinnedNews = Blog::where('is_pinned', true)->where('status', 'published')
+            ->latest()
+            ->select('id', 'title')
+            ->get();
+
+        $pinnedEvents = UpcomingEvent::where('is_pinned', true)
+            ->latest()
+            ->select('id', 'title', 'date')
+            ->get();
+
+        $marqueeItems = $pinnedNews->concat($pinnedEvents)->shuffle();
+
+        $leadershipMessages = Cache::remember('leadership_messages', 3600, function () {
+            return \App\Models\LeadershipMessage::active()->ordered()->get();
+        });
+
+        $constitution = Cache::remember('constitution', 3600, function () {
+            return \App\Models\Bylaw::first();
+        });
+
+        return view('frontend.home', compact(
+            'homeSetting', 'aboutSetting', 'ourServices', 'ongoingActivities',
+            'photoGalleries', 'pinnedPhotos', 'upcomingEvents', 'latestBlogs',
+            'leadershipMessages', 'constitution', 'marqueeItems'
+        ));
     }
 
     public function Procedure()
@@ -100,7 +139,9 @@ class homeController extends Controller
 
     public function about()
     {
-        $aboutSetting = AboutSetting::first();
+        $aboutSetting = Cache::remember('about_setting_full', 3600, function () {
+            return AboutSetting::first();
+        });
         return view('frontend.about', compact('aboutSetting'));
     }
 
@@ -111,7 +152,7 @@ class homeController extends Controller
 
     public function deshboard()
     {
-        $memberships = Membership::latest()->get();
+        $memberships = Membership::latest()->paginate(20);
         return view('backend.deshboard', compact('memberships'));
     }
     public function adminlogout()
@@ -165,6 +206,7 @@ class homeController extends Controller
             $flashdata = ['class' => 'success', 'message' => 'Settings created successfully!'];
         }
 
+        Cache::forget('site_settings');
         return redirect()->back()->with($flashdata);
     }
 
@@ -237,38 +279,51 @@ class homeController extends Controller
     // Content Section Methods
     public function news()
     {
-        $news = []; // Add news model when ready
+        $news = Blog::where('status', 'published')
+            ->latest()
+            ->select('id', 'title', 'excerpt', 'content', 'image', 'created_at')
+            ->paginate(12);
         return view('frontend.news', compact('news'));
     }
 
     public function events()
     {
-        $upcomingEvents = UpcomingEvent::orderBy('date', 'asc')->get();
+        $upcomingEvents = UpcomingEvent::orderBy('date', 'asc')
+            ->select('id', 'title', 'sub_title', 'date')
+            ->paginate(12);
         return view('frontend.events', compact('upcomingEvents'));
     }
 
     public function activities()
     {
-        $ongoingActivities = OngoingActivity::latest()->get();
+        $ongoingActivities = OngoingActivity::latest()
+            ->select('id', 'title', 'sub_title', 'thumbnail')
+            ->paginate(12);
         return view('frontend.activities', compact('ongoingActivities'));
     }
 
     public function gallery()
     {
-        $photoGalleries = PhotoGallery::latest()->get();
+        $photoGalleries = PhotoGallery::latest()
+            ->select('id', 'image', 'is_pinned')
+            ->paginate(24);
         return view('frontend.gallery', compact('photoGalleries'));
     }
 
     // Committee Methods
     public function executiveCommittee()
     {
-        $committees = Committee::orderBy('position_order')->get();
+        $committees = Cache::remember('executive_committee', 3600, function () {
+            return Committee::orderBy('position_order')->get();
+        });
         return view('frontend.executive-committee', compact('committees'));
     }
 
     public function advisoryCouncil()
     {
-        $advisors = Advisor::active()->ordered()->get();
+        $advisors = Cache::remember('advisory_council', 3600, function () {
+            return Advisor::active()->ordered()->get();
+        });
         return view('frontend.advisory-council', compact('advisors'));
     }
 

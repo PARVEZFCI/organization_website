@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AboutSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AboutSettingController extends Controller
 {
@@ -58,7 +59,7 @@ class AboutSettingController extends Controller
     public function update(Request $request)
     {
         $data = $request->only(['who_we_are', 'mission_vission', 'campus_title', 'campus_description']);
-        
+
         // Handle campus image upload
         if ($request->hasFile('campus_image')) {
             $image = $request->file('campus_image');
@@ -66,13 +67,15 @@ class AboutSettingController extends Controller
             $image->move(public_path('frontend/img/campus'), $imageName);
             $data['campus_image'] = 'frontend/img/campus/' . $imageName;
         }
-        
+
         $setting = AboutSetting::first();
         if ($setting) {
             $setting->update($data);
         } else {
             AboutSetting::create($data);
         }
+        Cache::forget('about_setting');
+        Cache::forget('about_setting_full');
         return redirect()->back()->with('success', 'About page updated successfully!');
     }
 

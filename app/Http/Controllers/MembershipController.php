@@ -12,15 +12,15 @@ class MembershipController extends Controller
     {
         // Only show active members on the public list
         $query = Membership::where('status', 'active');
-        
+
         // Filter by membership type if provided
         if ($request->has('type') && $request->type != '') {
             $query->where('membership_type', $request->type);
         }
-        
+
         $memberships = $query->latest()->paginate(12);
         $selectedType = $request->get('type', '');
-        
+
         return view('frontend.memberships-list', compact('memberships', 'selectedType'));
     }
 
@@ -53,8 +53,7 @@ class MembershipController extends Controller
             'office_address' => 'nullable|string',
 
             'membership_type' => 'required|string|in:General,Life,Associate',
-            'payment_type' => 'required|string|in:membership_fee,monthly_gm,monthly_ec,lifetime,event_fee,donation',
-            'custom_amount' => 'nullable|integer|min:1',
+            'payment_type' => 'required|string|in:membership_fee',
             'payment_method' => 'required|string',
         ]);
 
@@ -68,36 +67,15 @@ class MembershipController extends Controller
             $data['profile_picture'] = 'members/' . $filename;
         }
 
-        // Calculate amount based on payment type using fee settings
+        // Get membership fee from settings based on selected membership type
         $fees = \App\Models\MembershipFeeSetting::all()->pluck('fee','name');
-        switch ($request->payment_type) {
-            case 'membership_fee':
-                // fee depends on membership_type selection
-                $type = $request->membership_type;
-                $data['amount'] = $fees[$type] ?? 0;
-                break;
-            case 'lifetime':
-                $data['amount'] = $fees['Life'] ?? 0;
-                break;
-            case 'monthly_gm':
-                // monthly fees not handled dynamically yet, fallback
-                $data['amount'] = 100;
-                break;
-            case 'monthly_ec':
-                $data['amount'] = 300;
-                break;
-            case 'event_fee':
-            case 'donation':
-                $data['amount'] = $request->custom_amount ?? 0;
-                break;
-            default:
-                $data['amount'] = 0;
-        }
+        $data['amount'] = $fees[$request->membership_type] ?? 0;
 
-        $membership = Membership::create($data);
+        $membership = \App\Models\Membership::create($data);
 
-        // TODO: If payment_method == 'bkash', integrate bKash flow here.
+        // Note: Monthly payments for General Members will be auto-generated
+        // when admin approves the membership in the backend
 
-        return redirect()->route('membership.form')->with('success', 'Your membership application has been submitted successfully. We will contact you soon.');
+        return redirect()->route('membership.form')->with('success', 'Your membership application has been submitted successfully. We will review and contact you soon.');
     }
 }

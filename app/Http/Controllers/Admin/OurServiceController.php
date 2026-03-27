@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\OurService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class OurServiceController extends Controller
 {
@@ -40,6 +41,8 @@ class OurServiceController extends Controller
 
         OurService::create($data);
 
+        Cache::forget('home_services');
+        Cache::forget('footer_services');
         return redirect()->route('Admin.our_services.index')->with('success', 'Service created successfully!');
     }
 
@@ -77,6 +80,8 @@ class OurServiceController extends Controller
 
         $service->update($data);
 
+        Cache::forget('home_services');
+        Cache::forget('footer_services');
         return redirect()->route('Admin.our_services.index')->with('success', 'Service updated successfully!');
     }
 
@@ -88,6 +93,8 @@ class OurServiceController extends Controller
         $service = OurService::findOrFail($id);
         $service->delete();
 
+        Cache::forget('home_services');
+        Cache::forget('footer_services');
         return redirect()->route('Admin.our_services.index')->with('success', 'Service deleted successfully!');
     }
 }

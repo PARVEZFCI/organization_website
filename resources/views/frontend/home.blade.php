@@ -3,12 +3,6 @@
 @section('title', 'Home - BESWA')
 
 @section('content')
-@php
-$homeSettings = \App\Models\HomeSetting::first();
-$pinnedNews = \App\Models\Blog::where('is_pinned', true)->where('status', 'published')->latest()->get();
-$pinnedEvents = \App\Models\UpcomingEvent::where('is_pinned', true)->latest()->get();
-$marqueeItems = $pinnedNews->concat($pinnedEvents)->shuffle();
-@endphp
 
 {{-- ─────────────────────────────── HERO ─────────────────────────────── --}}
 
@@ -42,14 +36,14 @@ $marqueeItems = $pinnedNews->concat($pinnedEvents)->shuffle();
 @endif
 
 <section id="home" class="hero-section p-0">
-    <div class="hero-slide" style="background: linear-gradient(#fff, rgba(130, 194, 255, 0.85)), url('{{ asset($homeSettings->banner_image) }}');">
+    <div class="hero-slide" style="background: linear-gradient(#fff, rgba(130, 194, 255, 0.85)), url('{{ asset($homeSetting->banner_image) }}');">
         <div class="hero-overlay"></div>
         <div class="container h-100 position-relative" style="z-index: 2;">
             <div class="row h-100 align-items-center">
                 <div class="col-lg-8 col-md-10">
                     <div class="hero-content">
-                        <h1 class="display-4 fw-bold mb-4">{{ $homeSettings->title }}</h1>
-                        <p class="lead mb-4">{{ $homeSettings->details }}</p>
+                        <h1 class="display-4 fw-bold mb-4">{{ $homeSetting->title }}</h1>
+                        <p class="lead mb-4">{{ $homeSetting->details }}</p>
                         <a href="{{ route('membership.form') }}" class="btn btn-primary-custom me-2">Become a Member</a>
                         <a href="{{ route('donation.page') }}" class="btn btn-outline-custom">Payment Now</a>
                     </div>
@@ -483,7 +477,7 @@ $marqueeItems = $pinnedNews->concat($pinnedEvents)->shuffle();
             <div class="bg-white p-5 rounded-3 shadow-sm text-center">
                 <i class="fas fa-file-pdf" style="font-size: 4rem; color: #dc2626; margin-bottom: 1.5rem;"></i>
                 <h3 class="mb-3" style="color: #1e40af; font-weight: 600;">{{ $constitution->title ?? 'BESWA Constitution' }}</h3>
-                
+
                 @if($constitution->content)
                 <div class="mb-4 text-start" style="color: #64748b; line-height: 1.8;">
                     {!! Str::limit(strip_tags($constitution->content), 200) !!}
@@ -493,7 +487,7 @@ $marqueeItems = $pinnedNews->concat($pinnedEvents)->shuffle();
                     Read our official constitution document to learn more about BESWA's structure, rules, regulations, and governance framework.
                 </p>
                 @endif
-                
+
                 @if($constitution->file_path)
                     @if($constitution->file_type == 'pdf')
                         <a href="{{ asset($constitution->file_path) }}" download class="btn btn-primary btn-lg" style="background: #3b82f6; border: none; padding: 12px 40px; border-radius: 8px;">
@@ -508,7 +502,7 @@ $marqueeItems = $pinnedNews->concat($pinnedEvents)->shuffle();
                         </a>
                     @endif
                 @endif
-                
+
                 <p class="mt-3 mb-0 small text-muted">
                     <i class="fas fa-info-circle me-1"></i>Last Updated: {{ $constitution->updated_at ? $constitution->updated_at->format('F Y') : 'Recently' }}
                 </p>
@@ -646,7 +640,7 @@ $marqueeItems = $pinnedNews->concat($pinnedEvents)->shuffle();
         background-position: center !important;
         background-repeat: no-repeat !important;
     }
-    
+
     .hero-overlay {
         position: absolute;
         top: 0;
@@ -657,11 +651,11 @@ $marqueeItems = $pinnedNews->concat($pinnedEvents)->shuffle();
         mix-blend-mode: multiply;
         z-index: 1;
     }
-    
+
     .hero-content h1 {
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
-    
+
     .hero-content p {
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     }
@@ -724,12 +718,12 @@ $marqueeItems = $pinnedNews->concat($pinnedEvents)->shuffle();
     #heroPinnedCarousel .carousel-item {
         transition: transform 0.6s ease-in-out;
     }
-    
+
     @media (max-width: 768px) {
         .hero-slide {
             min-height: 400px;
         }
-        
+
         .hero-content h1 {
             font-size: 2rem;
         }

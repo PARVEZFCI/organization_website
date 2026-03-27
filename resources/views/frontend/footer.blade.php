@@ -1,6 +1,8 @@
   <!-- footer start -->
     @php
-        $settings = DB::table('settings')->orderBy('id','DESC')->first();
+        $settings = Cache::remember('site_settings', 3600, function () {
+            return DB::table('settings')->orderBy('id','DESC')->first();
+        });
     @endphp
     <footer id="Contact">
         <div class="footer-area primary-bg pt-150">

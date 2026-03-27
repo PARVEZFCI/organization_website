@@ -392,7 +392,7 @@
                 <div class="section-header">
                     <div class="section-number">4</div>
                     <div>
-                        <div class="section-title"><i class="fas fa-credit-card me-2"></i>Membership & Payment</div>
+                        <div class="section-title"><i class="fas fa-credit-card me-2"></i>Membership Selection</div>
                         <div class="section-subtitle">Choose your membership plan</div>
                     </div>
                 </div>
@@ -406,8 +406,8 @@
                                     <div class="card-content">
                                         <i class="fas fa-user-friends" style="font-size: 32px; color: #667eea; margin-bottom: 10px;"></i>
                                         <h5 style="margin: 10px 0 5px; font-size: 18px;">General Member</h5>
-                                        <p style="font-size: 13px; color: #718096; margin: 0;">Membership Fee: ৳{{ number_format($fees['General'] ?? 0) }}</p>
-                                        <p style="font-size: 13px; color: #718096; margin: 0;">Monthly Fee: ৳100</p>
+                                        <p style="font-size: 13px; color: #718096; margin: 5px 0;">One-time Fee: <strong>৳{{ number_format($fees['General'] ?? 0) }}</strong></p>
+                                        <p style="font-size: 12px; color: #ef4444; margin: 0;"><i class="fas fa-info-circle"></i> + ৳100/month</p>
                                     </div>
                                 </label>
                             </div>
@@ -417,8 +417,8 @@
                                     <div class="card-content">
                                         <i class="fas fa-crown" style="font-size: 32px; color: #f59e0b; margin-bottom: 10px;"></i>
                                         <h5 style="margin: 10px 0 5px; font-size: 18px;">Life Time Member</h5>
-                                        <p style="font-size: 13px; color: #718096; margin: 0;">Membership Fee: ৳{{ number_format($fees['Life'] ?? 0) }}</p>
-                                        <p style="font-size: 13px; color: #718096; margin: 0;">Monthly Fee: N/A</p>
+                                        <p style="font-size: 13px; color: #718096; margin: 5px 0;">One-time Fee: <strong>৳{{ number_format($fees['Life'] ?? 0) }}</strong></p>
+                                        <p style="font-size: 12px; color: #10b981; margin: 0;"><i class="fas fa-check-circle"></i> No monthly fee</p>
                                     </div>
                                 </label>
                             </div>
@@ -428,113 +428,43 @@
                                     <div class="card-content">
                                         <i class="fas fa-handshake" style="font-size: 32px; color: #10b981; margin-bottom: 10px;"></i>
                                         <h5 style="margin: 10px 0 5px; font-size: 18px;">Associate Member</h5>
-                                        <p style="font-size: 13px; color: #718096; margin: 0;">Membership Fee: ৳{{ number_format($fees['Associate'] ?? 0) }}</p>
-                                        <p style="font-size: 13px; color: #718096; margin: 0;">Monthly Fee: N/A</p>
+                                        <p style="font-size: 13px; color: #718096; margin: 5px 0;">One-time Fee: <strong>৳{{ number_format($fees['Associate'] ?? 0) }}</strong></p>
+                                        <p style="font-size: 12px; color: #10b981; margin: 0;"><i class="fas fa-check-circle"></i> No monthly fee</p>
                                     </div>
                                 </label>
                             </div>
                         </div>
                         @error('membership_type')<small class="text-danger d-block mt-2">{{ $message }}</small>@enderror
-                    </div>
 
-                    <div class="col-md-12 mt-4">
-                        <label class="form-label"><i class="fas fa-money-bill-wave input-icon"></i>Payment Type <sup class="text-danger">*</sup></label>
-                        <div class="payment-options">
-                            <label class="payment-option-card">
-                                <input type="radio" name="payment_type" value="membership_fee" data-amount="{{ $fees[old('membership_type', 'General')] ?? 0 }}" {{ old('payment_type')=='membership_fee' ? 'checked' : '' }} required>
-                                <div class="payment-info">
-                                    <i class="fas fa-id-card payment-icon"></i>
-                                    <div class="payment-details">
-                                        <h6>Membership Fee</h6>
-                                        <p>One-time registration fee</p>
-                                    </div>
-                                </div>
-                                <div class="payment-amount" id="membershipFeeAmount">৳{{ number_format($fees[old('membership_type','General')] ?? 0) }}</div>
-                            </label>
-
-                            {{-- <label class="payment-option-card">
-                                <input type="radio" name="payment_type" value="monthly_gm" data-amount="100" {{ old('payment_type')=='monthly_gm' ? 'checked' : '' }} required>
-                                <div class="payment-info">
-                                    <i class="fas fa-calendar-alt payment-icon"></i>
-                                    <div class="payment-details">
-                                        <h6>Monthly Fee for GM</h6>
-                                        <p>General Member monthly subscription</p>
-                                    </div>
-                                </div>
-                                <div class="payment-amount">৳100</div>
-                            </label>
-
-                            <label class="payment-option-card">
-                                <input type="radio" name="payment_type" value="monthly_ec" data-amount="300" {{ old('payment_type')=='monthly_ec' ? 'checked' : '' }} required>
-                                <div class="payment-info">
-                                    <i class="fas fa-calendar-check payment-icon"></i>
-                                    <div class="payment-details">
-                                        <h6>Monthly Fee for EC</h6>
-                                        <p>Executive Committee monthly subscription</p>
-                                    </div>
-                                </div>
-                                <div class="payment-amount">৳300</div>
-                            </label>
-
-                            <label class="payment-option-card">
-                                <input type="radio" name="payment_type" value="lifetime" data-amount="10000" {{ old('payment_type')=='lifetime' ? 'checked' : '' }} required>
-                                <div class="payment-info">
-                                    <i class="fas fa-crown payment-icon" style="color: #f59e0b;"></i>
-                                    <div class="payment-details">
-                                        <h6>Life Time Membership</h6>
-                                        <p>One-time payment for lifetime access</p>
-                                    </div>
-                                </div>
-                                <div class="payment-amount">৳10,000</div>
-                            </label>
-
-                            <label class="payment-option-card">
-                                <input type="radio" name="payment_type" value="event_fee" data-amount="0" {{ old('payment_type')=='event_fee' ? 'checked' : '' }} required>
-                                <div class="payment-info">
-                                    <i class="fas fa-calendar-day payment-icon" style="color: #10b981;"></i>
-                                    <div class="payment-details">
-                                        <h6>Event Fee</h6>
-                                        <p>Payment for specific events (amount varies)</p>
-                                    </div>
-                                </div>
-                                <div class="payment-amount">Custom</div>
-                            </label>
-
-                            <label class="payment-option-card">
-                                <input type="radio" name="payment_type" value="donation" data-amount="0" {{ old('payment_type')=='donation' ? 'checked' : '' }} required>
-                                <div class="payment-info">
-                                    <i class="fas fa-hand-holding-heart payment-icon" style="color: #ef4444;"></i>
-                                    <div class="payment-details">
-                                        <h6>Donation</h6>
-                                        <p>Contribute any amount to support our cause</p>
-                                    </div>
-                                </div>
-                                <div class="payment-amount">Custom</div>
-                            </label> --}}
+                        <!-- Info Alert -->
+                        <div class="alert alert-info mt-3" style="border-radius: 10px; border-left: 4px solid #3b82f6;">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Note:</strong> General Members will have a monthly contribution of ৳100 after approval, which will be tracked separately.
                         </div>
-                        @error('payment_type')<small class="text-danger d-block mt-2">{{ $message }}</small>@enderror
                     </div>
 
-                    <div class="col-md-12" id="customAmountField" style="display: none;">
-                        <label class="form-label"><i class="fas fa-dollar-sign input-icon"></i>Enter Amount <sup class="text-danger">*</sup></label>
-                        <input type="number" name="custom_amount" id="customAmount" class="form-control" placeholder="Enter amount in Taka" min="1">
-                        <small class="help-text">Enter your desired amount</small>
-                    </div>
+                    <!-- Hidden field for payment type (always membership_fee for new registrations) -->
+                    <input type="hidden" name="payment_type" value="membership_fee">
 
                     <div class="col-md-12">
                         <label class="form-label"><i class="fas fa-wallet input-icon"></i>Payment Method <sup class="text-danger">*</sup></label>
                         <select name="payment_method" class="form-select" required>
                             <option value="">Select Payment Method</option>
                             <option value="bkash" {{ old('payment_method')=='bkash' ? 'selected' : '' }}>bKash Payment</option>
+                            <option value="cash" {{ old('payment_method')=='cash' ? 'selected' : '' }}>Cash Payment (Pay at Office)</option>
+                            <option value="bank_transfer" {{ old('payment_method')=='bank_transfer' ? 'selected' : '' }}>Bank Transfer</option>
                         </select>
-                        <small class="help-text">You'll be redirected to complete the payment</small>
+                        <small class="help-text">Select how you want to pay the membership fee</small>
                         @error('payment_method')<small class="text-danger d-block mt-1">{{ $message }}</small>@enderror
                     </div>
 
                     <div class="col-md-12">
-                        <div class="total-amount-box" id="totalAmountBox" style="display: none;">
-                            <h5>Total Amount to Pay</h5>
-                            <div class="amount">৳<span id="totalAmount">0</span></div>
+                        <div class="total-amount-box" id="totalAmountBox">
+                            <h5>Membership Fee to Pay</h5>
+                            <div class="amount">৳<span id="totalAmount">{{ number_format($fees['General'] ?? 0) }}</span></div>
+                            <small style="opacity: 0.9; font-size: 13px; display: block; margin-top: 5px;">
+                                This is a one-time membership registration fee
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -557,112 +487,39 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const membershipTypeInputs = document.querySelectorAll('input[name="membership_type"]');
-    const paymentTypeInputs = document.querySelectorAll('input[name="payment_type"]');
-    const customAmountField = document.getElementById('customAmountField');
-    const customAmountInput = document.getElementById('customAmount');
     const totalAmountBox = document.getElementById('totalAmountBox');
     const totalAmountSpan = document.getElementById('totalAmount');
-    const membershipFeeAmountSpan = document.getElementById('membershipFeeAmount');
-    const membershipFeeInput = document.querySelector('input[name="payment_type"][value="membership_fee"]');
-    
+
     // Handle membership type selection
     membershipTypeInputs.forEach(input => {
         input.addEventListener('change', function() {
-            const fee = parseInt(this.dataset.fee);
-            
+            const fee = parseInt(this.dataset.fee) || 0;
+
             // Remove selected class from all membership cards
             document.querySelectorAll('.membership-card').forEach(card => {
                 card.classList.remove('selected');
             });
-            
+
             // Add selected class to current card
             this.closest('.membership-card').classList.add('selected');
-            
-            // Update membership fee amount display
-            if (membershipFeeAmountSpan) {
-                membershipFeeAmountSpan.textContent = '৳' + fee.toLocaleString();
-            }
-            
-            // Update payment type input data-amount
-            if (membershipFeeInput) {
-                membershipFeeInput.dataset.amount = fee;
-                
-                // If membership fee is selected, update total amount box
-                if (membershipFeeInput.checked) {
-                    totalAmountSpan.textContent = fee.toLocaleString();
-                    totalAmountBox.style.display = 'block';
-                }
-            }
-        });
-    });
-    
-    // initialize display based on preselected membership type
-    if (membershipTypeInputs.length && membershipFeeAmountSpan) {
-        const checkedType = document.querySelector('input[name="membership_type"]:checked');
-        if (checkedType) {
-            const fee = parseInt(checkedType.dataset.fee);
-            membershipFeeAmountSpan.textContent = '৳' + fee.toLocaleString();
-            if (membershipFeeInput) {
-                membershipFeeInput.dataset.amount = fee;
-                if (membershipFeeInput.checked && totalAmountSpan) {
-                    totalAmountSpan.textContent = fee.toLocaleString();
-                    totalAmountBox.style.display = 'block';
-                }
-            }
-        }
-    }
 
-    // Handle payment type selection
-    paymentTypeInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            // Remove selected class from all cards
-            document.querySelectorAll('.payment-option-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            
-            // Add selected class to current card
-            this.closest('.payment-option-card').classList.add('selected');
-            
-            const amount = parseInt(this.dataset.amount);
-            
-            // Show/hide custom amount field
-            if (amount === 0) {
-                customAmountField.style.display = 'block';
-                customAmountInput.required = true;
-                totalAmountBox.style.display = 'none';
-            } else {
-                customAmountField.style.display = 'none';
-                customAmountInput.required = false;
-                customAmountInput.value = '';
-                
-                // Show total amount
-                totalAmountSpan.textContent = amount.toLocaleString();
-                totalAmountBox.style.display = 'block';
+            // Update total amount display
+            if (totalAmountSpan) {
+                totalAmountSpan.textContent = fee.toLocaleString();
             }
         });
     });
-    
-    // Handle custom amount input
-    customAmountInput.addEventListener('input', function() {
-        const amount = parseInt(this.value) || 0;
-        if (amount > 0) {
-            totalAmountSpan.textContent = amount.toLocaleString();
-            totalAmountBox.style.display = 'block';
-        } else {
-            totalAmountBox.style.display = 'none';
-        }
-    });
-    
-    // Trigger change event on page load if membership type is selected
+
+    // Initialize: trigger change event on page load if membership type is selected
     const checkedMembershipType = document.querySelector('input[name="membership_type"]:checked');
     if (checkedMembershipType) {
         checkedMembershipType.dispatchEvent(new Event('change'));
-    }
-    
-    // Trigger change event on page load if a payment type is already selected
-    const checkedPaymentType = document.querySelector('input[name="payment_type"]:checked');
-    if (checkedPaymentType) {
-        checkedPaymentType.dispatchEvent(new Event('change'));
+    } else {
+        // Default to first option if none selected
+        if (membershipTypeInputs.length > 0) {
+            membershipTypeInputs[0].checked = true;
+            membershipTypeInputs[0].dispatchEvent(new Event('change'));
+        }
     }
 });
 </script>

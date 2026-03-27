@@ -109,6 +109,13 @@
                                                 <td>{{ $membership->payment_method ?? 'N/A' }}</td>
                                                 <td>{{ $membership->created_at->format('Y-m-d') }}</td>
                                                 <td>
+                                                    @if($membership->membership_type === 'General')
+                                                        <a href="{{ route('Admin.monthly_payments.member', $membership->id) }}"
+                                                           class="btn btn-sm btn-info"
+                                                           title="Monthly Payments">
+                                                            <i class="fa fa-money-bill-wave"></i>
+                                                        </a>
+                                                    @endif
                                                     <a href="{{ route('Admin.membership.edit', $membership->id) }}" class="btn btn-sm btn-primary" title="Edit">
                                                         <i class="fa fa-edit"></i>
                                                     </a>

@@ -51,56 +51,100 @@
         </li>
 
         <li class="nav-item"><a href="{{route('Admin.settings')}}" class="nav-link {{ request()->routeIs('Admin.settings') ? 'active' : '' }}"><i class="fa fa-cog"></i>Settings</a></li>
-        {{-- <li class="nav-item"><a href="{{route('Admin.branch')}}" class="nav-link"><i class="fa fa-cog"></i>Branch Setup</a></li> --}}
+
+        {{-- Content Management --}}
         @php
-            $websiteSetupRoutes = ['Admin.home_settings.edit','Admin.about_settings.edit','Admin.our_services.index','Admin.ongoing_activities.index','Admin.photo_gallery.index','Admin.upcoming_events.index','Admin.teams.index','Admin.committee.index','Admin.advisors.index','Admin.membership.index','Admin.bylaws.edit','Admin.leadership_messages.index'];
-            $websiteSetupActive = false;
-            foreach($websiteSetupRoutes as $r){ if(request()->routeIs($r)){ $websiteSetupActive = true; break; } }
+            $contentRoutes = ['Admin.home_settings.edit','Admin.about_settings.edit','Admin.photo_gallery.index','Admin.leadership_messages.index'];
+            $contentActive = false;
+            foreach($contentRoutes as $r){ if(request()->routeIs($r)){ $contentActive = true; break; } }
         @endphp
         <li class="nav-item">
-            <a href="#websiteSetupMenu" class="nav-link {{ $websiteSetupActive ? 'active' : 'collapsed' }}" data-toggle="collapse">
-                <i class="fa fa-cogs"></i> WebsiteSetup <span class="sub-ico"><i class="fa fa-angle-down"></i></span>
+            <a href="#contentMenu" class="nav-link {{ $contentActive ? 'active' : 'collapsed' }}" data-toggle="collapse">
+                <i class="fa fa-file-alt"></i> Content Management <span class="sub-ico"><i class="fa fa-angle-down"></i></span>
             </a>
         </li>
-        <li class="sub collapse {{ $websiteSetupActive ? 'show' : '' }}" id="websiteSetupMenu">
-            <a href="{{ route('Admin.home_settings.edit') }}" class="nav-link {{ request()->routeIs('Admin.home_settings.edit') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
-                <i class="fa fa-image"></i> Home Settings
+        <li class="sub collapse {{ $contentActive ? 'show' : '' }}" id="contentMenu">
+            <a href="{{ route('Admin.home_settings.edit') }}" class="nav-link {{ request()->routeIs('Admin.home_settings.edit') ? 'active' : '' }}" data-parent="#contentMenu">
+                <i class="fa fa-home"></i> Home Page
             </a>
-            <a href="{{ route('Admin.about_settings.edit') }}" class="nav-link {{ request()->routeIs('Admin.about_settings.edit') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
-                <i class="fa fa-info-circle"></i> About Settings
+            <a href="{{ route('Admin.about_settings.edit') }}" class="nav-link {{ request()->routeIs('Admin.about_settings.edit') ? 'active' : '' }}" data-parent="#contentMenu">
+                <i class="fa fa-info-circle"></i> About Page
             </a>
-            <a href="{{ route('Admin.our_services.index') }}" class="nav-link {{ request()->routeIs('Admin.our_services.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
-                <i class="fa fa-th"></i> Our Services
+            <a href="{{ route('Admin.photo_gallery.index') }}" class="nav-link {{ request()->routeIs('Admin.photo_gallery.index') ? 'active' : '' }}" data-parent="#contentMenu">
+                <i class="fa fa-images"></i> Photo Gallery
             </a>
-            <a href="{{ route('Admin.ongoing_activities.index') }}" class="nav-link {{ request()->routeIs('Admin.ongoing_activities.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
+            <a href="{{ route('Admin.leadership_messages.index') }}" class="nav-link {{ request()->routeIs('Admin.leadership_messages.*') ? 'active' : '' }}" data-parent="#contentMenu">
+                <i class="fa fa-comment-alt"></i> Leadership Messages
+            </a>
+        </li>
+
+        {{-- Services & Events --}}
+        @php
+            $servicesActive = request()->routeIs('Admin.our_services.index') || request()->routeIs('Admin.ongoing_activities.index') || request()->routeIs('Admin.upcoming_events.index');
+        @endphp
+        <li class="nav-item">
+            <a href="#servicesMenu" class="nav-link {{ $servicesActive ? 'active' : 'collapsed' }}" data-toggle="collapse">
+                <i class="fa fa-calendar-check"></i> Services & Events <span class="sub-ico"><i class="fa fa-angle-down"></i></span>
+            </a>
+        </li>
+        <li class="sub collapse {{ $servicesActive ? 'show' : '' }}" id="servicesMenu">
+            <a href="{{ route('Admin.our_services.index') }}" class="nav-link {{ request()->routeIs('Admin.our_services.index') ? 'active' : '' }}" data-parent="#servicesMenu">
+                <i class="fa fa-concierge-bell"></i> Our Services
+            </a>
+            <a href="{{ route('Admin.ongoing_activities.index') }}" class="nav-link {{ request()->routeIs('Admin.ongoing_activities.index') ? 'active' : '' }}" data-parent="#servicesMenu">
                 <i class="fa fa-tasks"></i> Ongoing Activities
             </a>
-            <a href="{{ route('Admin.photo_gallery.index') }}" class="nav-link {{ request()->routeIs('Admin.photo_gallery.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
-                <i class="fa fa-picture-o"></i> Photo Gallery
+            <a href="{{ route('Admin.upcoming_events.index') }}" class="nav-link {{ request()->routeIs('Admin.upcoming_events.index') ? 'active' : '' }}" data-parent="#servicesMenu">
+                <i class="fa fa-calendar-alt"></i> Upcoming Events
             </a>
-            <a href="{{ route('Admin.upcoming_events.index') }}" class="nav-link {{ request()->routeIs('Admin.upcoming_events.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
-                <i class="fa fa-calendar"></i> Upcoming Events
+        </li>
+
+        {{-- Organization Structure --}}
+        @php
+            $organizationActive = request()->routeIs('Admin.teams.index') || request()->routeIs('Admin.committee.index') || request()->routeIs('Admin.advisors.index');
+        @endphp
+        <li class="nav-item">
+            <a href="#organizationMenu" class="nav-link {{ $organizationActive ? 'active' : 'collapsed' }}" data-toggle="collapse">
+                <i class="fa fa-sitemap"></i> Organization <span class="sub-ico"><i class="fa fa-angle-down"></i></span>
             </a>
-            <a href="{{ route('Admin.teams.index') }}" class="nav-link {{ request()->routeIs('Admin.teams.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
-                <i class="fa fa-users"></i> Team
+        </li>
+        <li class="sub collapse {{ $organizationActive ? 'show' : '' }}" id="organizationMenu">
+            <a href="{{ route('Admin.teams.index') }}" class="nav-link {{ request()->routeIs('Admin.teams.index') ? 'active' : '' }}" data-parent="#organizationMenu">
+                <i class="fa fa-users"></i> Team Members
             </a>
-            <a href="{{ route('Admin.committee.index') }}" class="nav-link {{ request()->routeIs('Admin.committee.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
-                <i class="fa fa-user-tie"></i> Committee
+            <a href="{{ route('Admin.committee.index') }}" class="nav-link {{ request()->routeIs('Admin.committee.index') ? 'active' : '' }}" data-parent="#organizationMenu">
+                <i class="fa fa-user-tie"></i> Executive Committee
             </a>
-            <a href="{{ route('Admin.advisors.index') }}" class="nav-link {{ request()->routeIs('Admin.advisors.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
+            <a href="{{ route('Admin.advisors.index') }}" class="nav-link {{ request()->routeIs('Admin.advisors.index') ? 'active' : '' }}" data-parent="#organizationMenu">
                 <i class="fa fa-user-shield"></i> Advisory Council
             </a>
-            <a href="{{ route('Admin.membership.index') }}" class="nav-link {{ request()->routeIs('Admin.membership.index') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
-                <i class="fa fa-user-check"></i> Memberships
+        </li>
+
+        {{-- Membership Management --}}
+        @php
+            $membershipActive = request()->routeIs('Admin.membership.index') || request()->routeIs('Admin.membership_fees.*') || request()->routeIs('Admin.monthly_payments.*');
+        @endphp
+        <li class="nav-item">
+            <a href="#membershipMenu" class="nav-link {{ $membershipActive ? 'active' : 'collapsed' }}" data-toggle="collapse">
+                <i class="fa fa-id-card"></i> Membership <span class="sub-ico"><i class="fa fa-angle-down"></i></span>
             </a>
-            <a href="{{ route('Admin.membership_fees.index') }}" class="nav-link {{ request()->routeIs('Admin.membership_fees.*') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
-                <i class="fa fa-money"></i> Fee Management
+        </li>
+        <li class="sub collapse {{ $membershipActive ? 'show' : '' }}" id="membershipMenu">
+            <a href="{{ route('Admin.membership.index') }}" class="nav-link {{ request()->routeIs('Admin.membership.index') ? 'active' : '' }}" data-parent="#membershipMenu">
+                <i class="fa fa-user-check"></i> Members List
             </a>
-            <a href="{{ route('Admin.bylaws.edit') }}" class="nav-link {{ request()->routeIs('Admin.bylaws.edit') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
-                <i class="fa fa-file-alt"></i> Constitution
+            <a href="{{ route('Admin.membership_fees.index') }}" class="nav-link {{ request()->routeIs('Admin.membership_fees.*') ? 'active' : '' }}" data-parent="#membershipMenu">
+                <i class="fa fa-dollar-sign"></i> Fee Management
             </a>
-            <a href="{{ route('Admin.leadership_messages.index') }}" class="nav-link {{ request()->routeIs('Admin.leadership_messages.*') ? 'active' : '' }}" data-parent="#websiteSetupMenu">
-                <i class="fa fa-comments"></i> Leadership Messages
+            <a href="{{ route('Admin.monthly_payments.index') }}" class="nav-link {{ request()->routeIs('Admin.monthly_payments.*') ? 'active' : '' }}" data-parent="#membershipMenu">
+                <i class="fa fa-calendar-check"></i> Monthly Payments
+            </a>
+        </li>
+
+        {{-- Documents --}}
+        <li class="nav-item">
+            <a href="{{ route('Admin.bylaws.edit') }}" class="nav-link {{ request()->routeIs('Admin.bylaws.edit') ? 'active' : '' }}">
+                <i class="fa fa-book"></i> Constitution & Bylaws
             </a>
         </li>
 

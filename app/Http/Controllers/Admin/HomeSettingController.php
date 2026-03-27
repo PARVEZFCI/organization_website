@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\HomeSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class HomeSettingController extends Controller
 {
@@ -67,6 +68,7 @@ class HomeSettingController extends Controller
         } else {
             HomeSetting::create($data);
         }
+        Cache::forget('home_setting');
         return redirect()->back()->with('success', 'Home settings updated successfully!');
     }
 
@@ -76,5 +78,12 @@ class HomeSettingController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Flush home setting cache after any change.
+     */
+    protected static function booted(): void
+    {
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\LeadershipMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class LeadershipMessageController extends Controller
 {
@@ -39,6 +40,7 @@ class LeadershipMessageController extends Controller
 
         LeadershipMessage::create($data);
 
+        Cache::forget('leadership_messages');
         return redirect()->route('Admin.leadership_messages.index')->with('success', 'Leadership message created successfully!');
     }
 
@@ -75,6 +77,7 @@ class LeadershipMessageController extends Controller
 
         $message->update($data);
 
+        Cache::forget('leadership_messages');
         return redirect()->route('Admin.leadership_messages.index')->with('success', 'Leadership message updated successfully!');
     }
 
@@ -89,6 +92,7 @@ class LeadershipMessageController extends Controller
 
         $message->delete();
 
+        Cache::forget('leadership_messages');
         return redirect()->route('Admin.leadership_messages.index')->with('success', 'Leadership message deleted successfully!');
     }
 }

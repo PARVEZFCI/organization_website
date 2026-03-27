@@ -36,6 +36,7 @@ use App\Http\Controllers\Admin\CommitteeController;
 use App\Http\Controllers\Admin\AdvisorController;
 use App\Http\Controllers\Admin\AdminMembershipFeeController;
 use App\Http\Controllers\Admin\AdminMembershipController;
+use App\Http\Controllers\Admin\AdminMonthlyPaymentController;
 use App\Http\Controllers\Admin\BylawController;
 use App\Http\Controllers\Admin\LeadershipMessageController;
 use App\Http\Controllers\PublicRegistrationController;
@@ -235,6 +236,15 @@ Route::group(['middleware' => 'admin_auth', 'as' => 'Admin.', 'prefix' => 'admin
     Route::resource('membership', AdminMembershipController::class);
     Route::post('membership/{id}/approve', [AdminMembershipController::class, 'approve'])->name('membership.approve');
     Route::post('membership/{id}/toggle-status', [AdminMembershipController::class, 'toggleStatus'])->name('membership.toggle_status');
+
+    // Monthly Payments
+    Route::get('monthly-payments', [AdminMonthlyPaymentController::class, 'index'])->name('monthly_payments.index');
+    Route::get('monthly-payments/member/{membership}', [AdminMonthlyPaymentController::class, 'memberPayments'])->name('monthly_payments.member');
+    Route::post('monthly-payments/{payment}/mark-paid', [AdminMonthlyPaymentController::class, 'markPaid'])->name('monthly_payments.mark_paid');
+    Route::post('monthly-payments/{payment}/mark-due', [AdminMonthlyPaymentController::class, 'markDue'])->name('monthly_payments.mark_due');
+    Route::post('monthly-payments/generate-missing/{membership}', [AdminMonthlyPaymentController::class, 'generateMissing'])->name('monthly_payments.generate_missing');
+    Route::post('monthly-payments/generate-next/{membership}', [AdminMonthlyPaymentController::class, 'generateNext'])->name('monthly_payments.generate_next');
+    Route::post('monthly-payments/bulk-mark-paid', [AdminMonthlyPaymentController::class, 'bulkMarkPaid'])->name('monthly_payments.bulk_mark_paid');
 
     // Bylaws
     Route::get('/bylaws/edit', [BylawController::class, 'edit'])->name('bylaws.edit');

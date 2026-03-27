@@ -69,31 +69,37 @@
                     </a>
                 </div>
                 <p class="text-muted mb-3">
-                    Total 
+                    Total
                     @if($selectedType == 'General')
                         <strong>General</strong>
                     @elseif($selectedType == 'Associate')
                         <strong>Associate</strong>
+                    @elseif($selectedType == 'Life')
+                        <strong>Life</strong>
                     @else
                         <strong>All</strong>
                     @endif
                     Members: <strong>{{ $memberships->total() }}</strong>
                 </p>
-                
+
                 <!-- Filter Buttons -->
                 <div class="mb-4">
                     <div class="btn-group" role="group" aria-label="Member filter">
-                        <a href="{{ route('memberships.list') }}" 
+                        <a href="{{ route('memberships.list') }}"
                            class="btn {{ $selectedType == '' ? 'btn-primary' : 'btn-outline-primary' }}">
                             <i class="fas fa-users"></i> All Members
                         </a>
-                        <a href="{{ route('memberships.list', ['type' => 'General']) }}" 
+                        <a href="{{ route('memberships.list', ['type' => 'General']) }}"
                            class="btn {{ $selectedType == 'General' ? 'btn-primary' : 'btn-outline-primary' }}">
                             <i class="fas fa-user"></i> General Member
                         </a>
-                        <a href="{{ route('memberships.list', ['type' => 'Associate']) }}" 
+                        <a href="{{ route('memberships.list', ['type' => 'Associate']) }}"
                            class="btn {{ $selectedType == 'Associate' ? 'btn-primary' : 'btn-outline-primary' }}">
                             <i class="fas fa-handshake"></i> Associate Member
+                        </a>
+                        <a href="{{ route('memberships.list', ['type' => 'Life']) }}"
+                           class="btn {{ $selectedType == 'Life' ? 'btn-primary' : 'btn-outline-primary' }}">
+                            <i class="fas fa-star"></i> Life Member
                         </a>
                     </div>
                 </div>
