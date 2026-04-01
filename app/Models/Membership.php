@@ -3,17 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Membership extends Model
+class Membership extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'full_name', 'nid_passport_no', 'dob', 'gender', 'blood_group', 'present_address', 'permanent_address', 'profile_picture',
         'course_name', 'intake_no', 'passing_year',
         'mobile', 'email', 'occupation', 'organization', 'office_address',
-        'membership_type', 'payment_type', 'amount', 'payment_method', 'status'
+        'membership_type', 'payment_type', 'amount', 'payment_method', 'status', 'password'
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     /**

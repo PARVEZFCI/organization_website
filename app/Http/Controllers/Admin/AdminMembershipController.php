@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Membership;
 use App\Services\MonthlyPaymentService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AdminMembershipController extends Controller
 {
@@ -135,13 +136,20 @@ class AdminMembershipController extends Controller
         $membership = Membership::findOrFail($id);
         $membership->update(['status' => 'active']);
 
+        // Set default password (mobile number) if not already set
+        if (!$membership->password && $membership->mobile) {
+            $membership->update([
+                'password' => Hash::make($membership->mobile),
+            ]);
+        }
+
         // Generate monthly payments for General members
         if ($membership->requiresMonthlyPayments()) {
             $paymentService = new MonthlyPaymentService();
             $paymentService->generateMonthlyPayments($membership, 12); // Generate 12 months
         }
 
-        return redirect()->route('Admin.membership.index')->with('success', 'Member approved successfully!');
+        return redirect()->route('Admin.membership.index')->with('success', 'Member approved successfully! Default login password is their mobile number.');
     }
 
     /**

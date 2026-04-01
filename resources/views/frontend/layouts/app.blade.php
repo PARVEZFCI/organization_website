@@ -67,6 +67,20 @@
 
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('donation.page') ? 'active' : '' }}" href="{{ route('donation.page') }}">Donation</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+
+                    @if(Auth::guard('member')->check())
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('member.*') ? 'active' : '' }}" href="{{ route('member.dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-1"></i>My Dashboard
+                        </a>
+                    </li>
+                    @else
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('member.login') ? 'active' : '' }}" href="{{ route('member.login') }}">
+                            <i class="fas fa-sign-in-alt me-1"></i>Member Login
+                        </a>
+                    </li>
+                    @endif
                 </ul>
             </div>
         </div>

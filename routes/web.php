@@ -42,6 +42,8 @@ use App\Http\Controllers\Admin\LeadershipMessageController;
 use App\Http\Controllers\PublicRegistrationController;
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\BkashPaymentController;
+use App\Http\Controllers\Member\MemberAuthController;
+use App\Http\Controllers\Member\MemberDashboardController;
 
 
 Route::get('/clear-cache', function() {
@@ -262,4 +264,18 @@ Route::post('userlogin', [UserController::class, 'userlogin'])->name('userlogin'
 Route::group(['middleware' => 'auth'], function () {
     Route::get('userdeshboard', [UserController::class, 'userdeshboard'])->name('userdeshboard');
     Route::post('userlogout', [UserController::class, 'userlogout'])->name('userlogout');
+});
+
+// Member Authentication Routes
+Route::get('member/login', [MemberAuthController::class, 'showLoginForm'])->name('member.login');
+Route::post('member/login', [MemberAuthController::class, 'login'])->name('member.login.submit');
+
+Route::group(['middleware' => 'member_auth', 'prefix' => 'member', 'as' => 'member.'], function () {
+    Route::post('logout', [MemberAuthController::class, 'logout'])->name('logout');
+    Route::get('dashboard', [MemberDashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('payments', [MemberDashboardController::class, 'payments'])->name('payments');
+    Route::get('profile', [MemberDashboardController::class, 'profile'])->name('profile');
+    Route::post('profile', [MemberDashboardController::class, 'updateProfile'])->name('profile.update');
+    Route::get('change-password', [MemberDashboardController::class, 'changePassword'])->name('change-password');
+    Route::post('change-password', [MemberDashboardController::class, 'updatePassword'])->name('change-password.update');
 });
