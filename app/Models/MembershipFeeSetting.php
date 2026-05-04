@@ -14,6 +14,7 @@ class MembershipFeeSetting extends Model
     protected $fillable = [
         'name',
         'fee',
+        'monthly_fee',
     ];
 
     public $timestamps = true;

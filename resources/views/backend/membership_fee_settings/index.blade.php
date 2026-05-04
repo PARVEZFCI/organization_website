@@ -23,7 +23,8 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Fee</th>
+                                <th>Registration Fee</th>
+                                <th>Monthly Fee</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -32,6 +33,7 @@
                                 <tr>
                                     <td>{{ $fee->name }}</td>
                                     <td>{{ number_format($fee->fee,2) }}</td>
+                                    <td>{{ number_format($fee->monthly_fee,2) }}</td>
                                     <td>
                                         <a href="{{ route('Admin.membership_fees.edit', $fee->id) }}" class="btn btn-sm btn-primary">Edit</a>
                                     </td>

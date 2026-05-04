@@ -3,8 +3,7 @@
 @section('title', 'Mission & Vision - BESWA')
 
 @section('content')
-    <!-- Hero Section -->
-    <section class="hero-section d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); min-height: 30vh;">
+    <section class="hero-section d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #619af8 0%, #3b82f6 100%);min-height: 30vh;">
         <div class="container">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-8 col-md-10">
@@ -15,7 +14,8 @@
         </div>
     </section>
 
-    <!-- Mission & Vision Content -->
+    @include('frontend.partials.about-submenu')
+
     <section class="container my-5">
         <div class="row g-4">
             <div class="col-lg-6">

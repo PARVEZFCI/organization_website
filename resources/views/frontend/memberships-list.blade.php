@@ -3,8 +3,7 @@
 @section('title', 'Members List - BESWA')
 
 @section('content')
-    <!-- Hero Section -->
-    <section class="hero-section d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #ffffff 0%, #3b82f6 100%); min-height: 40vh;">
+    <section class="hero-section d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #619af8 0%, #3b82f6 100%);min-height: 40vh;">
         <div class="container">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-8 col-md-10">
@@ -15,7 +14,6 @@
         </div>
     </section>
 
-    <!-- Members List Content -->
     <style>
         /* prevent horizontal overflow on this page and ensure menu overlays the list on mobile */
         body { overflow-x: hidden; }
@@ -59,6 +57,17 @@
             background: rgba(59,130,246,0.05);
         }
     </style>
+
+    @php
+        $typeLabels = [
+            '' => 'All',
+            'Founder' => 'Founder',
+            'General' => 'General',
+            'Associate' => 'Associate',
+            'Life' => 'Life',
+        ];
+    @endphp
+
     <section class="container my-5 members-list-container">
         <div class="row mb-4">
             <div class="col-12">
@@ -70,15 +79,7 @@
                 </div>
                 <p class="text-muted mb-3">
                     Total
-                    @if($selectedType == 'General')
-                        <strong>General</strong>
-                    @elseif($selectedType == 'Associate')
-                        <strong>Associate</strong>
-                    @elseif($selectedType == 'Life')
-                        <strong>Life</strong>
-                    @else
-                        <strong>All</strong>
-                    @endif
+                    <strong>{{ $typeLabels[$selectedType] ?? 'All' }}</strong>
                     Members: <strong>{{ $memberships->total() }}</strong>
                 </p>
 
@@ -89,15 +90,19 @@
                            class="btn {{ $selectedType == '' ? 'btn-primary' : 'btn-outline-primary' }}">
                             <i class="fas fa-users"></i> All Members
                         </a>
-                        <a href="{{ route('memberships.list', ['type' => 'General']) }}"
+                        <a href="{{ route('memberships.founder') }}"
+                           class="btn {{ $selectedType == 'Founder' ? 'btn-primary' : 'btn-outline-primary' }}">
+                            <i class="fas fa-medal"></i> Founder Members
+                        </a>
+                        <a href="{{ route('memberships.general') }}"
                            class="btn {{ $selectedType == 'General' ? 'btn-primary' : 'btn-outline-primary' }}">
                             <i class="fas fa-user"></i> General Member
                         </a>
-                        <a href="{{ route('memberships.list', ['type' => 'Associate']) }}"
+                        <a href="{{ route('memberships.associate') }}"
                            class="btn {{ $selectedType == 'Associate' ? 'btn-primary' : 'btn-outline-primary' }}">
                             <i class="fas fa-handshake"></i> Associate Member
                         </a>
-                        <a href="{{ route('memberships.list', ['type' => 'Life']) }}"
+                        <a href="{{ route('memberships.life') }}"
                            class="btn {{ $selectedType == 'Life' ? 'btn-primary' : 'btn-outline-primary' }}">
                             <i class="fas fa-star"></i> Life Member
                         </a>

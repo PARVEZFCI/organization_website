@@ -41,6 +41,13 @@
                     <p class="stat-label">Monthly Due</p>
                     <h3 class="stat-value text-danger">৳{{ number_format($totalDue) }}</h3>
                     <small class="text-danger">{{ $dueCount }} pending</small>
+                    @if($member->requiresMonthlyPayments() && $currentDuePayment)
+                        <form action="{{ route('member.payments.bkash') }}" method="POST" class="mt-2">
+                            @csrf
+                            <input type="hidden" name="payment_id" value="{{ $currentDuePayment->id }}">
+                            <button type="submit" class="btn btn-sm btn-danger">Pay Now</button>
+                        </form>
+                    @endif
                 </div>
                 <div class="stat-icon" style="background: linear-gradient(135deg, #fc8181, #e53e3e);">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -114,6 +121,7 @@
                                 <th>Amount</th>
                                 <th>Status</th>
                                 <th>Paid Date</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -131,6 +139,17 @@
                                     @endif
                                 </td>
                                 <td>{{ $payment->paid_at ? $payment->paid_at->format('d M, Y') : '-' }}</td>
+                                <td>
+                                    @if($payment->status === 'due')
+                                        <form action="{{ route('member.payments.bkash') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="payment_id" value="{{ $payment->id }}">
+                                            <button type="submit" class="btn btn-sm btn-danger">Pay Now</button>
+                                        </form>
+                                    @else
+                                        <span class="text-muted small">Completed</span>
+                                    @endif
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -141,6 +160,77 @@
                     <i class="fas fa-receipt fa-3x mb-3 opacity-50"></i>
                     <p>No monthly payments recorded yet.</p>
                 </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-12">
+        <div class="card-custom">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-calendar-check me-2"></i>Event Registration History</span>
+                <span class="badge bg-primary">{{ $recentEventRegistrations->count() }}</span>
+            </div>
+            <div class="card-body p-0">
+                @if($recentEventRegistrations->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Event</th>
+                                    <th>Registration Code</th>
+                                    <th>Participants</th>
+                                    <th>Total</th>
+                                    <th>Payment</th>
+                                    <th>Status</th>
+                                    <th>Registered On</th>
+                                    <th>Proof</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($recentEventRegistrations as $registration)
+                                    <tr>
+                                        <td>
+                                            <div class="fw-semibold">{{ $registration->event->title ?? 'Event removed' }}</div>
+                                            @if(optional($registration->event)->date)
+                                                <small class="text-muted">{{ $registration->event->date->format('d M, Y') }}</small>
+                                            @endif
+                                        </td>
+                                        <td>{{ $registration->registration_code }}</td>
+                                        <td>{{ $registration->participantSummary() ?: 'N/A' }}</td>
+                                        <td>৳{{ number_format((float) $registration->total_amount, 2) }}</td>
+                                        <td>
+                                            <span class="badge {{ $registration->payment_status === 'paid' ? 'bg-success' : ($registration->payment_status === 'pending' ? 'bg-warning text-dark' : 'bg-secondary') }}">
+                                                {{ ucfirst($registration->payment_status) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge {{ $registration->registration_status === 'confirmed' ? 'bg-success' : 'bg-info' }}">
+                                                {{ ucfirst(str_replace('_', ' ', $registration->registration_status)) }}
+                                            </span>
+                                        </td>
+                                        <td>{{ optional($registration->created_at)->format('d M, Y') ?? '-' }}</td>
+                                        <td>
+                                            @if($registration->registration_status === 'confirmed')
+                                                <a href="{{ route('member.event-registrations.proof', $registration) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-print me-1"></i> Print PDF
+                                                </a>
+                                            @else
+                                                <span class="text-muted small">Available after confirmation</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="text-center py-5 text-muted">
+                        <i class="fas fa-calendar-check fa-3x mb-3 opacity-50"></i>
+                        <p class="mb-0">No event registration history found yet.</p>
+                    </div>
                 @endif
             </div>
         </div>

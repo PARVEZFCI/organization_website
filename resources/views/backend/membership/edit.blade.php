@@ -49,11 +49,29 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ $membership->email }}">
+                                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ $membership->email }}" required>
                                         @error('email')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="password" class="form-label">New Password</label>
+                                        <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password">
+                                        <small class="form-text text-muted">Leave blank to keep the current password.</small>
+                                        @error('password')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="password_confirmation" class="form-label">Confirm New Password</label>
+                                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
                                     </div>
                                 </div>
 
@@ -190,6 +208,7 @@
                                             <option value="General" {{ $membership->membership_type == 'General' ? 'selected' : '' }}>General</option>
                                             <option value="Life" {{ $membership->membership_type == 'Life' ? 'selected' : '' }}>Life</option>
                                             <option value="Associate" {{ $membership->membership_type == 'Associate' ? 'selected' : '' }}>Associate</option>
+                                            <option value="Founder" {{ $membership->membership_type == 'Founder' ? 'selected' : '' }}>Founder</option>
                                         </select>
                                         @error('membership_type')
                                             <small class="text-danger">{{ $message }}</small>

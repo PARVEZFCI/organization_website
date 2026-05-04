@@ -197,6 +197,10 @@
                                                                 <label>Remarks (Optional)</label>
                                                                 <textarea name="remarks" class="form-control" rows="2"></textarea>
                                                             </div>
+                                                            <div class="form-group">
+                                                                <label>Transaction ID (Optional)</label>
+                                                                <input type="text" name="transaction_id" class="form-control" placeholder="For bKash or bank reference">
+                                                            </div>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

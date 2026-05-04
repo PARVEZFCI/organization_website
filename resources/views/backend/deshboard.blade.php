@@ -1,164 +1,173 @@
 @extends('backend.admin-layout')
 @section('title', 'Dashboard - ')
 @section('content')
-
-
-@php
-$date = date("Y-m-d");
-$data =  Auth::guard('admin')->user();
-$student = DB::table('students')->where('date',$date)->count();
-@endphp
-@if($data->admin==1)
-<div id="real">
-      <div class="row">
-        @if(Auth::guard('admin')->user()->admin==1)
-        <!-- start head content         -->
-        <div class="col-lg-4 py-3">
-            <form action="{{ route('Admin.generate.qr.code') }}" method="GET">
-                <div class="form-group">
-                    <label for="qr_data">Enter Data for QR Code</label>
-                    <input type="text" name="qr_data" id="qr_data" class="form-control" placeholder="Enter text, URL, or any data" required>
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                <div>
+                    <h2 class="h4 mb-1">Admin Dashboard</h2>
+                    <p class="text-muted mb-0">Overview of your system performance and membership activity.</p>
                 </div>
-                <button type="submit" class="btn btn-sm btn-success mt-2">Generate QR Code</button>
-                <br>
-            </form>
-        </div>
-        <div class="col-lg-4">
-        </div>
-        <div class="col-lg-4"></div>
-        <br>
-        @endif
-        <div class="col-lg-4">
-          <!-- avtive -->
-          <div class="activeMode">
-            <div class="card">
-              <h1>Deactivate Mode</h1>
-              <a href="" class="btn btn-info">Activate now</a>
+                <div>
+                    <span class="badge bg-secondary p-2 text-uppercase fs-7">Last updated: {{ now()->format('F j, Y') }}</span>
+                </div>
             </div>
-          </div>
-          <!-- end active -->
-          <!-- Regster Users -->
-          <div class="regsterUsers">
-            <div class="card">
-              <div class="card-top">
-                <h1>500</h1>
-                <i class="fa fa-users"></i>
-              </div>
-              <div class="card-bottom">
-                <p>New Registered Users This Month</p>
-              </div>
-            </div>
-          </div>
-          <!-- end  Regster Users-->
         </div>
-        <div class="col-lg-8">
-          <div id="money">
-            <div class="card">
-              <div id="chart" style="width:100%; height:270px;"></div>
-            </div>
-          </div>
-        </div>
-        <!-- end head content -->
-        <!-- start analytics -->
-        <div class="col-lg-3">
-          <div class="analytics">
-            <div class="card">
-              <div class="icon"><i class="fa fa-video"></i></div>
-              <div class="text">
-                <h1>{{$student }}</h1>
-                <p>Today Admission Student</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="analytics">
-            <div class="card">
-              <div class="icon"><i class="fab fa-vimeo-v"></i></div>
-              <div class="text">
-                <h1></h1>
-                <p>Total Tv-Series</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="analytics">
-            <div class="card">
-              <div class="icon"><i class="fa fa-users"></i></div>
-              <div class="text">
-                <h1>32</h1>
-                <p>Total users</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="analytics">
-            <div class="card">
-              <div class="icon"><i class="fa fa-envelope"></i></div>
-              <div class="text">
-                <h1>43</h1>
-                <p>Total emails</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- end analytics -->
-        <!-- start member list -->
-        <div class="col-lg-12 mt-4">
-          <div class="card">
-            <div class="card-header bg-primary text-white">
-              <h5 class="mb-0">Member List</h5>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                  <thead class="table-light">
-                    <tr>
-                      <th>ID</th>
-                      <th>Full Name</th>
-                      <th>Email</th>
-                      <th>Mobile</th>
-                      <th>Course</th>
-                      <th>Membership Type</th>
-                      <th>Amount</th>
-                      <th>Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @forelse($memberships as $member)
-                      <tr>
-                        <td>{{ $member->id }}</td>
-                        <td>{{ $member->full_name }}</td>
-                        <td>{{ $member->email ?? 'N/A' }}</td>
-                        <td>{{ $member->mobile ?? 'N/A' }}</td>
-                        <td>{{ $member->course_name ?? 'N/A' }}</td>
-                        <td><span class="badge bg-info">{{ $member->membership_type ?? 'N/A' }}</span></td>
-                        <td>{{ $member->amount ?? 'N/A' }}</td>
-                        <td>{{ $member->created_at->format('Y-m-d') }}</td>
-                      </tr>
-                    @empty
-                      <tr>
-                        <td colspan="8" class="text-center text-muted">No members found</td>
-                      </tr>
-                    @endforelse
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- end member list -->
-        <!-- start user -->
-
-
-      </div>
     </div>
 
-    @endif
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h3 class="mb-1">{{ number_format($totalMembers) }}</h3>
+                            <p class="text-muted mb-0">Total members registered</p>
+                        </div>
+                        <div class="badge rounded-pill bg-primary p-3 shadow-sm">
+                            <i class="fas fa-user-friends fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h3 class="mb-1">{{ number_format($activeMembers) }}</h3>
+                            <p class="text-muted mb-0">Active memberships</p>
+                        </div>
+                        <div class="badge rounded-pill bg-success p-3 shadow-sm">
+                            <i class="fas fa-check-circle fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h3 class="mb-1">{{ number_format($newMembersThisMonth) }}</h3>
+                            <p class="text-muted mb-0">New members this month</p>
+                        </div>
+                        <div class="badge rounded-pill bg-info p-3 shadow-sm">
+                            <i class="fas fa-calendar-alt fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  @endsection
+    <div class="row g-3 mt-3">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h3 class="mb-1">{{ number_format($totalRevenue, 2) }}</h3>
+                            <p class="text-muted mb-0">Total revenue collected</p>
+                        </div>
+                        <div class="badge rounded-pill bg-warning p-3 shadow-sm">
+                            <i class="fas fa-dollar-sign fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h3 class="mb-1">{{ number_format($totalDue, 2) }}</h3>
+                            <p class="text-muted mb-0">Outstanding dues</p>
+                        </div>
+                        <div class="badge rounded-pill bg-danger p-3 shadow-sm">
+                            <i class="fas fa-exclamation-triangle fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h3 class="mb-1">{{ number_format($duePaymentsThisMonth) }}</h3>
+                            <p class="text-muted mb-0">Due payments this month</p>
+                        </div>
+                        <div class="badge rounded-pill bg-secondary p-3 shadow-sm">
+                            <i class="fas fa-clock fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">Latest Registered Members</h5>
+                        <small class="text-muted">Most recent membership applications and account details.</small>
+                    </div>
+                    <span class="badge bg-primary">Showing latest 10</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Mobile</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Registered</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($latestMembers as $member)
+                                    <tr>
+                                        <td>{{ $member->id }}</td>
+                                        <td>{{ $member->full_name }}</td>
+                                        <td>{{ $member->email ?? '—' }}</td>
+                                        <td>{{ $member->mobile ?? '—' }}</td>
+                                        <td>{{ $member->membership_type ?? '—' }}</td>
+                                        <td>{{ number_format($member->amount, 2) }}</td>
+                                        <td>
+                                            <span class="badge {{ $member->status === 'active' ? 'bg-success' : 'bg-secondary' }}">
+                                                {{ ucfirst($member->status ?? 'unknown') }}
+                                            </span>
+                                        </td>
+                                        <td>{{ optional($member->created_at)->format('Y-m-d') ?? '—' }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted py-4">No recent members found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

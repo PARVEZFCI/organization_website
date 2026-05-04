@@ -172,7 +172,7 @@
             </div>
 
             <div class="login-footer">
-                <p class="text-muted small mb-1">Not a member yet?</p>
+                <p class="text-muted small mb-1">Need an approved member account to log in.</p>
                 <a href="{{ route('membership.form') }}">Apply for Membership</a>
             </div>
         </div>

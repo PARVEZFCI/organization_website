@@ -33,6 +33,8 @@ use App\Http\Controllers\Admin\PhotoGalleryController;
 use App\Http\Controllers\Admin\UpcomingEventController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\CommitteeController;
+use App\Http\Controllers\Admin\PastCommitteePeriodController;
+use App\Http\Controllers\Admin\PastCommitteeMemberController;
 use App\Http\Controllers\Admin\AdvisorController;
 use App\Http\Controllers\Admin\AdminMembershipFeeController;
 use App\Http\Controllers\Admin\AdminMembershipController;
@@ -42,8 +44,10 @@ use App\Http\Controllers\Admin\LeadershipMessageController;
 use App\Http\Controllers\PublicRegistrationController;
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\BkashPaymentController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\Member\MemberAuthController;
 use App\Http\Controllers\Member\MemberDashboardController;
+use App\Http\Controllers\Admin\EventRegistrationController;
 
 
 Route::get('/clear-cache', function() {
@@ -58,19 +62,29 @@ Route::get('/', [homeController::class, 'home'])->name('home');
 
 // About Section Routes
 Route::get('/about', [homeController::class, 'about'])->name('about');
-Route::get('/mission-vision', [homeController::class, 'missionVision'])->name('mission.vision');
-Route::get('/aims-objectives', [homeController::class, 'aimsObjectives'])->name('aims.objectives');
+Route::get('/about/mission-vision', [homeController::class, 'missionVision'])->name('about.mission-vision');
+Route::get('/about/aims-objectives', [homeController::class, 'aimsObjectives'])->name('about.aims-objectives');
+Route::redirect('/about/vision', '/about/mission-vision')->name('about.vision');
+Route::redirect('/about/mission', '/about/mission-vision')->name('about.mission');
+Route::redirect('/about/aim', '/about/aims-objectives')->name('about.aim');
+Route::redirect('/about/objective', '/about/aims-objectives')->name('about.objective');
+Route::redirect('/mission-vision', '/about/mission-vision')->name('mission.vision');
+Route::redirect('/aims-objectives', '/about/aims-objectives')->name('aims.objectives');
 Route::get('/constitution', [homeController::class, 'constitution'])->name('constitution');
 Route::get('/message', [homeController::class, 'message'])->name('message');
 
 // Content Section Routes
 Route::get('/news', [homeController::class, 'news'])->name('news');
-Route::get('/events', [homeController::class, 'events'])->name('events');
+Route::get('/event', [homeController::class, 'events'])->name('events');
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+Route::post('/events/{event}/register', [EventController::class, 'register'])->name('events.register');
 Route::get('/activities', [homeController::class, 'activities'])->name('activities');
 Route::get('/gallery', [homeController::class, 'gallery'])->name('gallery');
 
 // Committee Routes
 Route::get('/executive-committee', [homeController::class, 'executiveCommittee'])->name('executive-committee');
+Route::get('/past-leaders', [homeController::class, 'pastLeaders'])->name('past-leaders');
+Route::get('/past-leaders/{period}', [homeController::class, 'pastLeadersPeriod'])->name('past-leaders.period');
 Route::get('/advisory-council', [homeController::class, 'advisoryCouncil'])->name('advisory-council');
 // Route::get('/bylaws', [homeController::class, 'bylaws'])->name('bylaws'); // Removed - Constitution now on home page
 
@@ -82,6 +96,10 @@ Route::get('/donation', [homeController::class, 'donation'])->name('donation.pag
 Route::get('/membership', [App\Http\Controllers\MembershipController::class, 'create'])->name('membership.form');
 Route::post('/membership', [App\Http\Controllers\MembershipController::class, 'store'])->name('membership.store');
 Route::get('/memberships', [App\Http\Controllers\MembershipController::class, 'index'])->name('memberships.list');
+Route::get('/memberships/general', [App\Http\Controllers\MembershipController::class, 'general'])->name('memberships.general');
+Route::get('/memberships/life', [App\Http\Controllers\MembershipController::class, 'life'])->name('memberships.life');
+Route::get('/memberships/associate', [App\Http\Controllers\MembershipController::class, 'associate'])->name('memberships.associate');
+Route::get('/memberships/founder', [App\Http\Controllers\MembershipController::class, 'founder'])->name('memberships.founder');
 
 // Public Registration Routes
 Route::get('/register-account', [PublicRegistrationController::class, 'showRegistrationForm'])->name('public.registration.form');
@@ -231,13 +249,22 @@ Route::group(['middleware' => 'admin_auth', 'as' => 'Admin.', 'prefix' => 'admin
     Route::post('photo_gallery/{id}/toggle-pin', [PhotoGalleryController::class, 'togglePin'])->name('photo_gallery.toggle_pin');
     Route::resource('upcoming_events', UpcomingEventController::class);
     Route::post('upcoming_events/{id}/toggle-pin', [UpcomingEventController::class, 'togglePin'])->name('upcoming_events.togglePin');
+    Route::get('upcoming_events/{event}/registrations', [EventRegistrationController::class, 'index'])->name('upcoming_events.registrations');
     Route::resource('teams', TeamController::class);
     Route::resource('committee', CommitteeController::class);
+    Route::resource('past-committee-periods', PastCommitteePeriodController::class);
+    Route::get('past-committee-periods/{period}/members/create', [PastCommitteeMemberController::class, 'create'])->name('past-committee-members.create');
+    Route::post('past-committee-periods/{period}/members', [PastCommitteeMemberController::class, 'store'])->name('past-committee-members.store');
+    Route::get('past-committee-periods/{period}/members/{member}/edit', [PastCommitteeMemberController::class, 'edit'])->name('past-committee-members.edit');
+    Route::put('past-committee-periods/{period}/members/{member}', [PastCommitteeMemberController::class, 'update'])->name('past-committee-members.update');
+    Route::delete('past-committee-periods/{period}/members/{member}', [PastCommitteeMemberController::class, 'destroy'])->name('past-committee-members.destroy');
     Route::resource('advisors', AdvisorController::class);
     Route::resource('membership_fees', AdminMembershipFeeController::class);
     Route::resource('membership', AdminMembershipController::class);
     Route::post('membership/{id}/approve', [AdminMembershipController::class, 'approve'])->name('membership.approve');
     Route::post('membership/{id}/toggle-status', [AdminMembershipController::class, 'toggleStatus'])->name('membership.toggle_status');
+    Route::get('membership/{id}/change-password', [AdminMembershipController::class, 'editPassword'])->name('membership.password.edit');
+    Route::post('membership/{id}/change-password', [AdminMembershipController::class, 'updatePassword'])->name('membership.password.update');
 
     // Monthly Payments
     Route::get('monthly-payments', [AdminMonthlyPaymentController::class, 'index'])->name('monthly_payments.index');
@@ -274,6 +301,8 @@ Route::group(['middleware' => 'member_auth', 'prefix' => 'member', 'as' => 'memb
     Route::post('logout', [MemberAuthController::class, 'logout'])->name('logout');
     Route::get('dashboard', [MemberDashboardController::class, 'dashboard'])->name('dashboard');
     Route::get('payments', [MemberDashboardController::class, 'payments'])->name('payments');
+    Route::get('event-registrations/{registration}/proof', [MemberDashboardController::class, 'downloadEventProof'])->name('event-registrations.proof');
+    Route::post('payments/bkash', [BkashPaymentController::class, 'createMembershipPayment'])->name('payments.bkash');
     Route::get('profile', [MemberDashboardController::class, 'profile'])->name('profile');
     Route::post('profile', [MemberDashboardController::class, 'updateProfile'])->name('profile.update');
     Route::get('change-password', [MemberDashboardController::class, 'changePassword'])->name('change-password');

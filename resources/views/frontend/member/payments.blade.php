@@ -69,6 +69,7 @@
                         <th>Payment Method</th>
                         <th>Paid Date</th>
                         <th>Remarks</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,6 +90,19 @@
                         <td>{{ $payment->payment_method ? ucfirst($payment->payment_method) : '-' }}</td>
                         <td>{{ $payment->paid_at ? $payment->paid_at->format('d M, Y') : '-' }}</td>
                         <td>{{ $payment->remarks ?? '-' }}</td>
+                        <td>
+                            @if($payment->status === 'due')
+                                <form action="{{ route('member.payments.bkash') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="payment_id" value="{{ $payment->id }}">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-bolt me-1"></i>Pay Now
+                                    </button>
+                                </form>
+                            @else
+                                <span class="text-success small fw-semibold">Paid</span>
+                            @endif
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>

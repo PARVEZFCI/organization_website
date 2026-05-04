@@ -46,9 +46,24 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}">
+                                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required>
                                         @error('email')<small class="text-danger">{{ $message }}</small>@enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" required>
+                                        @error('password')<small class="text-danger">{{ $message }}</small>@enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="password_confirmation" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
                                     </div>
                                 </div>
 
@@ -161,6 +176,7 @@
                                             <option value="General" {{ old('membership_type') == 'General' ? 'selected' : '' }}>General</option>
                                             <option value="Life" {{ old('membership_type') == 'Life' ? 'selected' : '' }}>Life</option>
                                             <option value="Associate" {{ old('membership_type') == 'Associate' ? 'selected' : '' }}>Associate</option>
+                                            <option value="Founder" {{ old('membership_type') == 'Founder' ? 'selected' : '' }}>Founder</option>
                                         </select>
                                         @error('membership_type')<small class="text-danger">{{ $message }}</small>@enderror
                                     </div>
@@ -205,6 +221,7 @@
                                             <option value="active" {{ old('status', 'active') == 'active' ? 'selected' : '' }}>Active</option>
                                             <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                                         </select>
+                                        <small class="text-muted d-block mt-1">General members get monthly dues auto-generated once active.</small>
                                         @error('status')<small class="text-danger">{{ $message }}</small>@enderror
                                     </div>
                                 </div>

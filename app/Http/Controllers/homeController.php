@@ -17,9 +17,12 @@ use App\Models\OngoingActivity;
 use App\Models\PhotoGallery;
 use App\Models\UpcomingEvent;
 use App\Models\Membership;
+use App\Models\MembershipMonthlyPayment;
 use App\Models\Committee;
 use App\Models\Blog;
 use App\Models\Advisor;
+use App\Models\LeadershipMessage;
+use App\Models\PastCommitteePeriod;
 use DB;
 use Illuminate\Support\Str;
 
@@ -139,10 +142,15 @@ class homeController extends Controller
 
     public function about()
     {
-        $aboutSetting = Cache::remember('about_setting_full', 3600, function () {
+        $aboutSetting = $this->getAboutSetting();
+        return view('frontend.about', compact('aboutSetting'));
+    }
+
+    protected function getAboutSetting()
+    {
+        return Cache::remember('about_setting_full', 3600, function () {
             return AboutSetting::first();
         });
-        return view('frontend.about', compact('aboutSetting'));
     }
 
     public function contact()
@@ -152,8 +160,28 @@ class homeController extends Controller
 
     public function deshboard()
     {
-        $memberships = Membership::latest()->paginate(20);
-        return view('backend.deshboard', compact('memberships'));
+        $totalMembers = Membership::count();
+        $activeMembers = Membership::where('status', 'active')->count();
+        $newMembersThisMonth = Membership::whereYear('created_at', now()->year)
+            ->whereMonth('created_at', now()->month)
+            ->count();
+        $totalRevenue = Membership::sum('amount') + MembershipMonthlyPayment::where('status', 'paid')->sum('amount');
+        $totalDue = MembershipMonthlyPayment::where('status', 'due')->sum('amount');
+        $duePaymentsThisMonth = MembershipMonthlyPayment::where('year', now()->year)
+            ->where('month', now()->month)
+            ->where('status', 'due')
+            ->count();
+        $latestMembers = Membership::latest()->take(10)->get();
+
+        return view('backend.deshboard', compact(
+            'totalMembers',
+            'activeMembers',
+            'newMembersThisMonth',
+            'totalRevenue',
+            'totalDue',
+            'duePaymentsThisMonth',
+            'latestMembers'
+        ));
     }
     public function adminlogout()
     {
@@ -258,12 +286,14 @@ class homeController extends Controller
     // About Section Methods
     public function missionVision()
     {
-        return view('frontend.mission-vision');
+        $aboutSetting = $this->getAboutSetting();
+        return view('frontend.mission-vision', compact('aboutSetting'));
     }
 
     public function aimsObjectives()
     {
-        return view('frontend.aims-objectives');
+        $aboutSetting = $this->getAboutSetting();
+        return view('frontend.aims-objectives', compact('aboutSetting'));
     }
 
     public function constitution()
@@ -273,7 +303,11 @@ class homeController extends Controller
 
     public function message()
     {
-        return view('frontend.message');
+        $leadershipMessages = Cache::remember('leadership_messages', 3600, function () {
+            return LeadershipMessage::active()->ordered()->get();
+        });
+
+        return view('frontend.message', compact('leadershipMessages'));
     }
 
     // Content Section Methods
@@ -289,7 +323,7 @@ class homeController extends Controller
     public function events()
     {
         $upcomingEvents = UpcomingEvent::orderBy('date', 'asc')
-            ->select('id', 'title', 'sub_title', 'date')
+            ->select('id', 'title', 'sub_title', 'details', 'date', 'banner_path', 'venue', 'is_registration_enabled')
             ->paginate(12);
         return view('frontend.events', compact('upcomingEvents'));
     }
@@ -325,6 +359,27 @@ class homeController extends Controller
             return Advisor::active()->ordered()->get();
         });
         return view('frontend.advisory-council', compact('advisors'));
+    }
+
+    public function pastLeaders()
+    {
+        $periods = Cache::remember('past_committee_periods', 3600, function () {
+            return PastCommitteePeriod::active()
+                ->ordered()
+                ->withCount('members')
+                ->get();
+        });
+
+        return view('frontend.past-leaders', compact('periods'));
+    }
+
+    public function pastLeadersPeriod(PastCommitteePeriod $period)
+    {
+        $period->load(['members' => function ($query) {
+            $query->orderBy('serial')->orderBy('name');
+        }]);
+
+        return view('frontend.past-leaders-period', compact('period'));
     }
 
     // Bylaws page removed - Constitution now displayed on home page

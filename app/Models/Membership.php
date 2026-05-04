@@ -14,12 +14,17 @@ class Membership extends Authenticatable
         'full_name', 'nid_passport_no', 'dob', 'gender', 'blood_group', 'present_address', 'permanent_address', 'profile_picture',
         'course_name', 'intake_no', 'passing_year',
         'mobile', 'email', 'occupation', 'organization', 'office_address',
-        'membership_type', 'payment_type', 'amount', 'payment_method', 'status', 'password'
+        'membership_type', 'payment_type', 'amount', 'payment_method', 'status', 'activated_at', 'password'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $casts = [
+        'dob' => 'date',
+        'activated_at' => 'datetime',
     ];
 
     /**
@@ -28,6 +33,11 @@ class Membership extends Authenticatable
     public function monthlyPayments()
     {
         return $this->hasMany(MembershipMonthlyPayment::class);
+    }
+
+    public function eventRegistrations()
+    {
+        return $this->hasMany(EventRegistration::class);
     }
 
     /**
@@ -69,5 +79,16 @@ class Membership extends Authenticatable
     {
         return $this->monthlyPayments()->where('status', 'due')->count();
     }
-}
 
+    /**
+     * Get current month's unpaid payment, if any.
+     */
+    public function currentMonthDuePayment()
+    {
+        return $this->monthlyPayments()
+            ->where('month', now()->month)
+            ->where('year', now()->year)
+            ->where('status', 'due')
+            ->first();
+    }
+}

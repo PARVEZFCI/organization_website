@@ -14,9 +14,14 @@
                         @csrf
                         @method('PUT')
                         <div class="form-group">
-                            <label for="fee">Fee Amount</label>
+                            <label for="fee">Registration Fee Amount</label>
                             <input type="number" step="0.01" class="form-control @error('fee') is-invalid @enderror" id="fee" name="fee" value="{{ $fee->fee }}" required>
                             @error('fee')<small class="text-danger">{{ $message }}</small>@enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="monthly_fee">Monthly Fee Amount</label>
+                            <input type="number" step="0.01" class="form-control @error('monthly_fee') is-invalid @enderror" id="monthly_fee" name="monthly_fee" value="{{ $fee->monthly_fee }}" required>
+                            @error('monthly_fee')<small class="text-danger">{{ $message }}</small>@enderror
                         </div>
                         <button type="submit" class="btn btn-success">Save</button>
                         <a href="{{ route('Admin.membership_fees.index') }}" class="btn btn-secondary">Cancel</a>

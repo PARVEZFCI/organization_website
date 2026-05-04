@@ -1,26 +1,32 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Aims and Objectives - BESWA')
+@section('title', 'Aims & Objectives - BESWA')
 
 @section('content')
-    <!-- Hero Section -->
-    <section class="hero-section d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #ffffff 0%, #3b82f6 100%); min-height: 40vh;">
+    <section class="hero-section d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #619af8 0%, #3b82f6 100%);min-height: 40vh;">
         <div class="container">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-8 col-md-10">
-                    <h1 class="mb-3" style="color: white; font-size: clamp(1.8rem, 5vw, 2.5rem); font-weight: 700;">Aims and Objectives</h1>
+                    <h1 class="mb-3" style="color: white; font-size: clamp(1.8rem, 5vw, 2.5rem); font-weight: 700;">Aims & Objectives</h1>
                     <p class="mb-0" style="color: rgba(255,255,255,0.95); font-size: clamp(1rem, 3vw, 1.2rem);">What We Stand For</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Aims and Objectives Content -->
+    @include('frontend.partials.about-submenu')
+
     <section class="container my-5">
         <div class="row g-4">
             <div class="col-12">
                 <div class="bg-white p-4 rounded-3 shadow-sm">
-                    <h2 class="mb-4" style="color: #1e40af;">Our Key Objectives</h2>
+                    <h2 class="mb-4" style="color: #1e40af;">Our Aims and Objectives</h2>
+                    <p style="line-height: 1.8; color: #475569; font-size: 1.05rem;">
+                        The aim of BESWA is to create a united and responsible alumni platform for BIMT ex-students so they can support one another, stand beside present students, and contribute positively to society.
+                    </p>
+                    <p class="mb-4" style="line-height: 1.8; color: #475569; font-size: 1.05rem;">
+                        Through this shared platform, the association seeks to preserve institutional values, build alumni solidarity, and encourage meaningful service through education, welfare, and community-focused initiatives.
+                    </p>
                     <div class="row g-4">
                         <div class="col-md-6">
                             <div class="p-3 border-start border-primary border-4">

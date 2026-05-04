@@ -7,16 +7,38 @@ use App\Models\Membership;
 use App\Services\MonthlyPaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class AdminMembershipController extends Controller
 {
+    protected MonthlyPaymentService $paymentService;
+
+    public function __construct(MonthlyPaymentService $paymentService)
+    {
+        $this->paymentService = $paymentService;
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $memberships = Membership::latest()->paginate(15);
-        return view('backend.membership.index', compact('memberships'));
+        $membershipTypes = ['General', 'Life', 'Associate', 'Founder'];
+        $selectedType = $request->string('membership_type')->toString();
+
+        if (!in_array($selectedType, $membershipTypes, true)) {
+            $selectedType = '';
+        }
+
+        $memberships = Membership::query()
+            ->when($selectedType !== '', function ($query) use ($selectedType) {
+                $query->where('membership_type', $selectedType);
+            })
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('backend.membership.index', compact('memberships', 'membershipTypes', 'selectedType'));
     }
 
     /**
@@ -45,11 +67,12 @@ class AdminMembershipController extends Controller
             'intake_no'        => 'nullable|string|max:100',
             'passing_year'     => 'nullable|integer|min:1900|max:' . (date('Y') + 1),
             'mobile'           => 'required|string|max:50',
-            'email'            => 'nullable|email|max:255',
+            'email'            => 'required|email|max:255|unique:memberships,email',
+            'password'         => 'required|string|min:8|confirmed',
             'occupation'       => 'nullable|string|max:255',
             'organization'     => 'nullable|string|max:255',
             'office_address'   => 'nullable|string',
-            'membership_type'  => 'required|string|in:General,Life,Associate',
+            'membership_type'  => 'required|string|in:General,Life,Associate,Founder',
             'payment_type'     => 'required|string|in:membership_fee,monthly_gm,monthly_ec,lifetime,event_fee,donation',
             'amount'           => 'required|integer|min:1',
             'payment_method'   => 'required|string',
@@ -63,7 +86,13 @@ class AdminMembershipController extends Controller
             $data['profile_picture'] = 'members/' . $filename;
         }
 
-        Membership::create($data);
+        $membership = Membership::create([
+            ...$data,
+            'activated_at' => $data['status'] === 'active' ? now() : null,
+            'password' => Hash::make($data['password']),
+        ]);
+
+        $this->syncMonthlyPayments($membership);
 
         return redirect()->route('Admin.membership.index')->with('success', 'Member added successfully!');
     }
@@ -75,6 +104,36 @@ class AdminMembershipController extends Controller
     {
         $membership = Membership::findOrFail($id);
         return view('backend.membership.edit', compact('membership'));
+    }
+
+    /**
+     * Show the password change form for the specified member.
+     */
+    public function editPassword(string $id)
+    {
+        $membership = Membership::findOrFail($id);
+
+        return view('backend.membership.change-password', compact('membership'));
+    }
+
+    /**
+     * Update the password for the specified member.
+     */
+    public function updatePassword(Request $request, string $id)
+    {
+        $membership = Membership::findOrFail($id);
+
+        $data = $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $membership->update([
+            'password' => Hash::make($data['password']),
+        ]);
+
+        return redirect()
+            ->route('Admin.membership.index')
+            ->with('success', 'Member password changed successfully!');
     }
 
     /**
@@ -99,12 +158,13 @@ class AdminMembershipController extends Controller
             'passing_year' => 'nullable|integer|min:1900|max:' . (date('Y')+1),
 
             'mobile' => 'required|string|max:50',
-            'email' => 'nullable|email|max:255',
+            'email' => ['required', 'email', 'max:255', Rule::unique('memberships', 'email')->ignore($membership->id)],
+            'password' => 'nullable|string|min:8|confirmed',
             'occupation' => 'nullable|string|max:255',
             'organization' => 'nullable|string|max:255',
             'office_address' => 'nullable|string',
 
-            'membership_type' => 'required|string|in:General,Life,Associate',
+            'membership_type' => 'required|string|in:General,Life,Associate,Founder',
             'payment_type' => 'required|string|in:membership_fee,monthly_gm,monthly_ec,lifetime,event_fee,donation',
             'amount' => 'required|integer|min:1',
             'payment_method' => 'required|string',
@@ -123,7 +183,18 @@ class AdminMembershipController extends Controller
             $data['profile_picture'] = 'members/' . $filename;
         }
 
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
+        if (($data['status'] ?? $membership->status) === 'active' && !$membership->activated_at) {
+            $data['activated_at'] = now();
+        }
+
         $membership->update($data);
+        $this->syncMonthlyPayments($membership->refresh());
 
         return redirect()->route('Admin.membership.index')->with('success', 'Membership updated successfully!');
     }
@@ -134,22 +205,20 @@ class AdminMembershipController extends Controller
     public function approve(string $id)
     {
         $membership = Membership::findOrFail($id);
-        $membership->update(['status' => 'active']);
+        $membership->update([
+            'status' => 'active',
+            'activated_at' => $membership->activated_at ?? now(),
+        ]);
 
-        // Set default password (mobile number) if not already set
         if (!$membership->password && $membership->mobile) {
             $membership->update([
                 'password' => Hash::make($membership->mobile),
             ]);
         }
 
-        // Generate monthly payments for General members
-        if ($membership->requiresMonthlyPayments()) {
-            $paymentService = new MonthlyPaymentService();
-            $paymentService->generateMonthlyPayments($membership, 12); // Generate 12 months
-        }
+        $this->syncMonthlyPayments($membership->refresh());
 
-        return redirect()->route('Admin.membership.index')->with('success', 'Member approved successfully! Default login password is their mobile number.');
+        return redirect()->route('Admin.membership.index')->with('success', 'Member approved successfully!');
     }
 
     /**
@@ -159,7 +228,13 @@ class AdminMembershipController extends Controller
     {
         $membership = Membership::findOrFail($id);
         $membership->status = $membership->status === 'active' ? 'inactive' : 'active';
+        if ($membership->status === 'active' && !$membership->activated_at) {
+            $membership->activated_at = now();
+        }
         $membership->save();
+
+        $this->syncMonthlyPayments($membership->refresh());
+
         return redirect()->route('Admin.membership.index')->with('success', 'Member status updated successfully!');
     }
 
@@ -178,5 +253,15 @@ class AdminMembershipController extends Controller
         $membership->delete();
 
         return redirect()->route('Admin.membership.index')->with('success', 'Membership deleted successfully!');
+    }
+
+    protected function syncMonthlyPayments(Membership $membership): void
+    {
+        if ($membership->status !== 'active' || !$membership->requiresMonthlyPayments()) {
+            return;
+        }
+
+        $this->paymentService->generateMissingPayments($membership);
+        $this->paymentService->generateSingleMonth($membership, now()->month, now()->year);
     }
 }

@@ -3,12 +3,18 @@
 namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
+use App\Models\EventRegistration;
+use App\Services\EventRegistrationDocumentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class MemberDashboardController extends Controller
 {
+    public function __construct(private EventRegistrationDocumentService $documentService)
+    {
+    }
+
     private function member()
     {
         return Auth::guard('member')->user();
@@ -17,16 +23,23 @@ class MemberDashboardController extends Controller
     public function dashboard()
     {
         $member = $this->member();
-        $member->load('monthlyPayments');
+        $member->load([
+            'monthlyPayments',
+            'eventRegistrations.event',
+        ]);
 
         $totalPaid = $member->monthlyPayments->where('status', 'paid')->sum('amount');
         $totalDue = $member->monthlyPayments->where('status', 'due')->sum('amount');
         $paidCount = $member->monthlyPayments->where('status', 'paid')->count();
         $dueCount = $member->monthlyPayments->where('status', 'due')->count();
         $membershipFee = $member->amount;
+        $currentDuePayment = $member->currentMonthDuePayment();
+        $recentEventRegistrations = $member->eventRegistrations
+            ->sortByDesc('created_at')
+            ->take(6);
 
         return view('frontend.member.dashboard', compact(
-            'member', 'totalPaid', 'totalDue', 'paidCount', 'dueCount', 'membershipFee'
+            'member', 'totalPaid', 'totalDue', 'paidCount', 'dueCount', 'membershipFee', 'currentDuePayment', 'recentEventRegistrations'
         ));
     }
 
@@ -101,5 +114,16 @@ class MemberDashboardController extends Controller
         ]);
 
         return redirect()->route('member.change-password')->with('success', 'Password changed successfully.');
+    }
+
+    public function downloadEventProof(EventRegistration $registration)
+    {
+        $member = $this->member();
+
+        abort_unless($registration->membership_id === $member->id, 403);
+
+        $pdf = $this->documentService->pdf($registration);
+
+        return $pdf->download($this->documentService->filename($registration));
     }
 }

@@ -121,6 +121,8 @@
             color: rgba(255,255,255,0.9);
             padding: 0.6rem 1.2rem;
             transition: background 0.2s ease;
+            margin-left: 15px;
+            width: calc(100% - 30px);
         }
 
         .navbar .dropdown-item:hover {
@@ -308,7 +310,7 @@
         .navbar.sticky-top .nav-link.active,
         .navbar.navbar-white.sticky-top .nav-link.active {
             background: rgba(59, 130, 246, 0.15) !important;
-            color: var(--color-primary) !important;
+            color: #fff !important;
             font-weight: 600 !important;
         }
         .navbar.navbar-white .navbar-toggler {
@@ -413,6 +415,7 @@
 .navbar a{
     color: #fff !important;
 }
+
         .on-dark a,
         .office-section a,
         .newsletter-section a,

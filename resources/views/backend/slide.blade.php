@@ -101,7 +101,7 @@
 
         {{-- Organization Structure --}}
         @php
-            $organizationActive = request()->routeIs('Admin.teams.index') || request()->routeIs('Admin.committee.index') || request()->routeIs('Admin.advisors.index');
+            $organizationActive = request()->routeIs('Admin.teams.index') || request()->routeIs('Admin.committee.index') || request()->routeIs('Admin.past-committee-periods.*') || request()->routeIs('Admin.past-committee-members.*') || request()->routeIs('Admin.advisors.index');
         @endphp
         <li class="nav-item">
             <a href="#organizationMenu" class="nav-link {{ $organizationActive ? 'active' : 'collapsed' }}" data-toggle="collapse">
@@ -114,6 +114,9 @@
             </a>
             <a href="{{ route('Admin.committee.index') }}" class="nav-link {{ request()->routeIs('Admin.committee.index') ? 'active' : '' }}" data-parent="#organizationMenu">
                 <i class="fa fa-user-tie"></i> Executive Committee
+            </a>
+            <a href="{{ route('Admin.past-committee-periods.index') }}" class="nav-link {{ request()->routeIs('Admin.past-committee-periods.*') || request()->routeIs('Admin.past-committee-members.*') ? 'active' : '' }}" data-parent="#organizationMenu">
+                <i class="fa fa-history"></i> Past Leaders
             </a>
             <a href="{{ route('Admin.advisors.index') }}" class="nav-link {{ request()->routeIs('Admin.advisors.index') ? 'active' : '' }}" data-parent="#organizationMenu">
                 <i class="fa fa-user-shield"></i> Advisory Council

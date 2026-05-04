@@ -90,12 +90,14 @@ class AdminMonthlyPaymentController extends Controller
         $validated = $request->validate([
             'payment_method' => 'nullable|string|max:50',
             'remarks' => 'nullable|string|max:500',
+            'transaction_id' => 'nullable|string|max:100',
         ]);
 
         $this->paymentService->markAsPaid(
             $payment,
             $validated['payment_method'] ?? 'cash',
-            $validated['remarks'] ?? null
+            $validated['remarks'] ?? null,
+            $validated['transaction_id'] ?? null
         );
 
         return back()->with('success', 'Payment marked as paid successfully!');

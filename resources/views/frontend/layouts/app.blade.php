@@ -47,21 +47,43 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ url('/') }}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">About Us</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs('about') || request()->routeIs('about.*') || request()->routeIs('message') ? 'active' : '' }}" href="#" id="aboutDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            About Us
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="aboutDropdown">
+                            <li><a class="dropdown-item {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">About Us</a></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('about.mission-vision') ? 'active' : '' }}" href="{{ route('about.mission-vision') }}">Mission & Vision</a></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('about.aims-objectives') ? 'active' : '' }}" href="{{ route('about.aims-objectives') }}">Aims & Objectives</a></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('message') ? 'active' : '' }}" href="{{ route('message') }}">Leadership Message</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('news') ? 'active' : '' }}" href="{{ route('news') }}">News</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('events') ? 'active' : '' }}" href="{{ route('events') }}">Events</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('activities') ? 'active' : '' }}" href="{{ route('activities') }}">Our Activities</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('gallery') ? 'active' : '' }}" href="{{ route('gallery') }}">Gallery</a></li>
 
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs('membership.form') || request()->routeIs('memberships.*') ? 'active' : '' }}" href="#" id="membershipDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Our Family/Membership
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="membershipDropdown">
+                            <li><a class="dropdown-item {{ request()->routeIs('memberships.founder') ? 'active' : '' }}" href="{{ route('memberships.founder') }}">Founder Members</a></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('memberships.general') ? 'active' : '' }}" href="{{ route('memberships.general') }}">General Members</a></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('memberships.life') ? 'active' : '' }}" href="{{ route('memberships.life') }}">Life Members</a></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('memberships.associate') ? 'active' : '' }}" href="{{ route('memberships.associate') }}">Associate Members</a></li>
+                        </ul>
+                    </li>
+
                     <!-- Committee Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {{ request()->routeIs('executive-committee') || request()->routeIs('advisory-council') || request()->routeIs('memberships.list') ? 'active' : '' }}" href="#" id="committeeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Committee
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs('executive-committee') || request()->routeIs('past-leaders') || request()->routeIs('advisory-council') ? 'active' : '' }}" href="#" id="committeeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Our Leadership
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="committeeDropdown">
                             <li><a class="dropdown-item {{ request()->routeIs('executive-committee') ? 'active' : '' }}" href="{{ route('executive-committee') }}">Executive Committee</a></li>
                             <li><a class="dropdown-item {{ request()->routeIs('advisory-council') ? 'active' : '' }}" href="{{ route('advisory-council') }}">Advisory Council</a></li>
-                            <li><a class="dropdown-item {{ request()->routeIs('memberships.list') ? 'active' : '' }}" href="{{ route('memberships.list') }}">Members</a></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('past-leaders') ? 'active' : '' }}" href="{{ route('past-leaders') }}">Past Leaders</a></li>
                         </ul>
                     </li>
 
@@ -159,11 +181,11 @@
                 <div class="col-lg-3 col-md-6 mb-4">
                     <h5>Quick Links</h5>
                     <a href="{{ route('about') }}">About Us</a>
+                    <a href="{{ route('about.mission-vision') }}">Mission & Vision</a>
+                    <a href="{{ route('about.aims-objectives') }}">Aims & Objectives</a>
                     <a href="#">Contact</a>
                     <a href="#">Privacy Policy</a>
                     <a href="#">Terms & Conditions</a>
-                    <a href="#">FAQs</a>
-                    <a href="#">Careers</a>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4">
                     <h5>Contact Info</h5>

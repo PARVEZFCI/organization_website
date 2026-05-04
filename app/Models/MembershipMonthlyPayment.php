@@ -17,7 +17,10 @@ class MembershipMonthlyPayment extends Model
         'status',
         'paid_at',
         'payment_method',
-        'remarks'
+        'gateway_payment_id',
+        'transaction_id',
+        'remarks',
+        'gateway_response',
     ];
 
     protected $casts = [

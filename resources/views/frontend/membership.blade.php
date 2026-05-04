@@ -233,7 +233,12 @@
 </style>
 
 @php
-    $fees = isset($fees) ? $fees : collect(['General'=>0,'Life'=>0,'Associate'=>0]);
+    $fees = isset($fees) ? $fees : collect([
+        'General' => ['fee' => 0, 'monthly_fee' => 100],
+        'Life' => ['fee' => 0, 'monthly_fee' => 0],
+        'Associate' => ['fee' => 0, 'monthly_fee' => 0],
+        'Founder' => ['fee' => 0, 'monthly_fee' => 0],
+    ]);
 @endphp
 
 <div class="membership-wrapper">
@@ -364,14 +369,25 @@
                         @error('mobile')<small class="text-danger d-block mt-1">{{ $message }}</small>@enderror
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label"><i class="fas fa-envelope input-icon"></i>Email Address</label>
-                        <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="your.email@example.com">
+                        <label class="form-label"><i class="fas fa-envelope input-icon"></i>Email Address <sup class="text-danger">*</sup></label>
+                        <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="your.email@example.com" required>
                         @error('email')<small class="text-danger d-block mt-1">{{ $message }}</small>@enderror
                     </div>
                     <div class="col-md-4">
                         <label class="form-label"><i class="fas fa-user-tie input-icon"></i>Current Occupation</label>
                         <input type="text" name="occupation" class="form-control" value="{{ old('occupation') }}" placeholder="e.g. Software Engineer">
                         @error('occupation')<small class="text-danger d-block mt-1">{{ $message }}</small>@enderror
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label"><i class="fas fa-lock input-icon"></i>Password <sup class="text-danger">*</sup></label>
+                        <input type="password" name="password" class="form-control" placeholder="Create a secure password" required>
+                        <small class="help-text">You will use this password to access the member portal after approval.</small>
+                        @error('password')<small class="text-danger d-block mt-1">{{ $message }}</small>@enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label"><i class="fas fa-lock input-icon"></i>Confirm Password <sup class="text-danger">*</sup></label>
+                        <input type="password" name="password_confirmation" class="form-control" placeholder="Re-enter your password" required>
                     </div>
 
                     <div class="col-md-6">
@@ -400,46 +416,57 @@
                     <div class="col-md-12">
                         <label class="form-label">Membership Type <sup class="text-danger">*</sup></label>
                         <div class="row g-3">
-                            <div class="col-md-4">
+                            <div class="col-md-6 col-lg-3">
                                 <label class="membership-card">
-                                    <input type="radio" name="membership_type" value="General" data-fee="{{ $fees['General'] ?? 0 }}" {{ old('membership_type')=='General' ? 'checked' : '' }} required>
+                                    <input type="radio" name="membership_type" value="General" data-fee="{{ $fees['General']['fee'] ?? 0 }}" {{ old('membership_type')=='General' ? 'checked' : '' }} required>
                                     <div class="card-content">
                                         <i class="fas fa-user-friends" style="font-size: 32px; color: #667eea; margin-bottom: 10px;"></i>
                                         <h5 style="margin: 10px 0 5px; font-size: 18px;">General Member</h5>
-                                        <p style="font-size: 13px; color: #718096; margin: 5px 0;">One-time Fee: <strong>৳{{ number_format($fees['General'] ?? 0) }}</strong></p>
-                                        <p style="font-size: 12px; color: #ef4444; margin: 0;"><i class="fas fa-info-circle"></i> + ৳100/month</p>
+                                        <p style="font-size: 13px; color: #718096; margin: 5px 0;">One-time Fee: <strong>৳{{ number_format($fees['General']['fee'] ?? 0) }}</strong></p>
+                                        <p style="font-size: 12px; color: #ef4444; margin: 0;"><i class="fas fa-info-circle"></i> + ৳{{ number_format($fees['General']['monthly_fee'] ?? 100) }}/month</p>
                                     </div>
                                 </label>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6 col-lg-3">
                                 <label class="membership-card">
-                                    <input type="radio" name="membership_type" value="Life" data-fee="{{ $fees['Life'] ?? 0 }}" {{ old('membership_type')=='Life' ? 'checked' : '' }} required>
+                                    <input type="radio" name="membership_type" value="Life" data-fee="{{ $fees['Life']['fee'] ?? 0 }}" {{ old('membership_type')=='Life' ? 'checked' : '' }} required>
                                     <div class="card-content">
                                         <i class="fas fa-crown" style="font-size: 32px; color: #f59e0b; margin-bottom: 10px;"></i>
                                         <h5 style="margin: 10px 0 5px; font-size: 18px;">Life Time Member</h5>
-                                        <p style="font-size: 13px; color: #718096; margin: 5px 0;">One-time Fee: <strong>৳{{ number_format($fees['Life'] ?? 0) }}</strong></p>
+                                        <p style="font-size: 13px; color: #718096; margin: 5px 0;">One-time Fee: <strong>৳{{ number_format($fees['Life']['fee'] ?? 0) }}</strong></p>
                                         <p style="font-size: 12px; color: #10b981; margin: 0;"><i class="fas fa-check-circle"></i> No monthly fee</p>
                                     </div>
                                 </label>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6 col-lg-3">
                                 <label class="membership-card">
-                                    <input type="radio" name="membership_type" value="Associate" data-fee="{{ $fees['Associate'] ?? 0 }}" {{ old('membership_type')=='Associate' ? 'checked' : '' }} required>
+                                    <input type="radio" name="membership_type" value="Associate" data-fee="{{ $fees['Associate']['fee'] ?? 0 }}" {{ old('membership_type')=='Associate' ? 'checked' : '' }} required>
                                     <div class="card-content">
                                         <i class="fas fa-handshake" style="font-size: 32px; color: #10b981; margin-bottom: 10px;"></i>
                                         <h5 style="margin: 10px 0 5px; font-size: 18px;">Associate Member</h5>
-                                        <p style="font-size: 13px; color: #718096; margin: 5px 0;">One-time Fee: <strong>৳{{ number_format($fees['Associate'] ?? 0) }}</strong></p>
+                                        <p style="font-size: 13px; color: #718096; margin: 5px 0;">One-time Fee: <strong>৳{{ number_format($fees['Associate']['fee'] ?? 0) }}</strong></p>
                                         <p style="font-size: 12px; color: #10b981; margin: 0;"><i class="fas fa-check-circle"></i> No monthly fee</p>
                                     </div>
                                 </label>
                             </div>
+                            {{-- <div class="col-md-6 col-lg-3">
+                                <label class="membership-card">
+                                    <input type="radio" name="membership_type" value="Founder" data-fee="{{ $fees['Founder']['fee'] ?? 0 }}" {{ old('membership_type')=='Founder' ? 'checked' : '' }} required>
+                                    <div class="card-content">
+                                        <i class="fas fa-medal" style="font-size: 32px; color: #dc2626; margin-bottom: 10px;"></i>
+                                        <h5 style="margin: 10px 0 5px; font-size: 18px;">Founder Member</h5>
+                                        <p style="font-size: 13px; color: #718096; margin: 5px 0;">One-time Fee: <strong>৳{{ number_format($fees['Founder']['fee'] ?? 0) }}</strong></p>
+                                        <p style="font-size: 12px; color: #10b981; margin: 0;"><i class="fas fa-check-circle"></i> No monthly fee</p>
+                                    </div>
+                                </label>
+                            </div> --}}
                         </div>
                         @error('membership_type')<small class="text-danger d-block mt-2">{{ $message }}</small>@enderror
 
                         <!-- Info Alert -->
                         <div class="alert alert-info mt-3" style="border-radius: 10px; border-left: 4px solid #3b82f6;">
                             <i class="fas fa-info-circle me-2"></i>
-                            <strong>Note:</strong> General Members will have a monthly contribution of ৳100 after approval, which will be tracked separately.
+                            <strong>Note:</strong> General Members will have a monthly contribution of ৳{{ number_format($fees['General']['monthly_fee'] ?? 100) }} after approval, which will be tracked separately.
                         </div>
                     </div>
 
@@ -461,7 +488,7 @@
                     <div class="col-md-12">
                         <div class="total-amount-box" id="totalAmountBox">
                             <h5>Membership Fee to Pay</h5>
-                            <div class="amount">৳<span id="totalAmount">{{ number_format($fees['General'] ?? 0) }}</span></div>
+                            <div class="amount">৳<span id="totalAmount">{{ number_format($fees['General']['fee'] ?? 0) }}</span></div>
                             <small style="opacity: 0.9; font-size: 13px; display: block; margin-top: 5px;">
                                 This is a one-time membership registration fee
                             </small>

@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <section class="hero-section d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #ffffff 0%, #3b82f6 100%); min-height: 40vh;">
+    <section class="hero-section d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #619af8 0%, #3b82f6 100%);min-height: 40vh;">
         <div class="container">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-8 col-md-10">
@@ -23,9 +23,9 @@
             <div class="col-lg-4 col-md-6">
                 <div class="bg-white rounded-3 shadow-sm text-center p-4">
                     <div class="mb-3">
-                        <img src="{{ asset($advisor->photo ?? 'https://via.placeholder.com/150') }}" 
-                             alt="{{ $advisor->name }}" 
-                             class="rounded-circle" 
+                        <img src="{{ asset($advisor->photo ?? 'https://via.placeholder.com/150') }}"
+                             alt="{{ $advisor->name }}"
+                             class="rounded-circle"
                              style="width: 150px; height: 150px; object-fit: cover;">
                     </div>
                     <h5 class="mb-1" style="color: #1e40af;">{{ $advisor->name }}</h5>

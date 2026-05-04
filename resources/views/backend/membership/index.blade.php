@@ -65,13 +65,37 @@
 
                     <div class="card">
                         <div class="card-header bg-white">
-                            <div style="display:inline-block; padding-top:5px;">
-                                <i class="fa fa-table"></i>
-                                Members List
+                            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                                <div style="display:inline-block; padding-top:5px;">
+                                    <i class="fa fa-table"></i>
+                                    Members List
+                                </div>
+
+                                <form action="{{ route('Admin.membership.index') }}" method="GET" class="form-inline mt-2 mt-md-0">
+                                    <label for="membership_type" class="mr-2 mb-0">Filter Type</label>
+                                    <select name="membership_type" id="membership_type" class="form-control form-control-sm mr-2">
+                                        <option value="">All Memberships</option>
+                                        @foreach($membershipTypes as $type)
+                                            <option value="{{ $type }}" {{ $selectedType === $type ? 'selected' : '' }}>
+                                                {{ $type }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-info mr-2">Filter</button>
+                                    @if($selectedType)
+                                        <a href="{{ route('Admin.membership.index') }}" class="btn btn-sm btn-secondary">Reset</a>
+                                    @endif
+                                </form>
                             </div>
                         </div>
 
                         <div class="card-body">
+                            @if($selectedType)
+                                <div class="alert alert-info">
+                                    Showing <strong>{{ $selectedType }}</strong> memberships only.
+                                </div>
+                            @endif
+
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-sm">
                                     <thead>
@@ -85,6 +109,7 @@
                                             <th>Amount</th>
                                             <th>Payment Method</th>
                                             <th>Date</th>
+                                            <th>Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -108,6 +133,13 @@
                                                 <td>{{ $membership->amount ?? 'N/A' }}</td>
                                                 <td>{{ $membership->payment_method ?? 'N/A' }}</td>
                                                 <td>{{ $membership->created_at->format('Y-m-d') }}</td>
+                                                <td> <form action="{{ route('Admin.membership.toggle_status', $membership->id) }}" method="POST" style="display:inline-block;">
+                                                        @csrf
+                                                        <label class="switch" title="Toggle status">
+                                                            <input type="checkbox" onchange="this.form.submit()" {{ $membership->status == 'active' ? 'checked' : '' }}>
+                                                            <span class="slider round"></span>
+                                                        </label>
+                                                    </form></td>
                                                 <td>
                                                     @if($membership->membership_type === 'General')
                                                         <a href="{{ route('Admin.monthly_payments.member', $membership->id) }}"
@@ -119,13 +151,10 @@
                                                     <a href="{{ route('Admin.membership.edit', $membership->id) }}" class="btn btn-sm btn-primary" title="Edit">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
-                                                    <form action="{{ route('Admin.membership.toggle_status', $membership->id) }}" method="POST" style="display:inline-block;">
-                                                        @csrf
-                                                        <label class="switch" title="Toggle status">
-                                                            <input type="checkbox" onchange="this.form.submit()" {{ $membership->status == 'active' ? 'checked' : '' }}>
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                    </form>
+                                                    <a href="{{ route('Admin.membership.password.edit', $membership->id) }}" class="btn btn-sm btn-warning" title="Change Password">
+                                                        <i class="fa fa-key"></i>
+                                                    </a>
+
                                                     <form action="{{ route('Admin.membership.destroy', $membership->id) }}" method="POST" style="display:inline-block;">
                                                         @csrf
                                                         @method('DELETE')
